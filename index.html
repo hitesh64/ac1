@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HOT FOOD | Event Catering</title>
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=1200&q=80"
+        fetchpriority="high">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,400,600,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #ffffff;
+            --bg-soft: #fff7ed;
+            --text-main: #2a0a0a;
+            --accent: #ea580c;
+            --accent-hover: #c2410c;
+            --accent-light: #ffedd5;
+            --brand-orange: #f97316;
+            --brand-red: #dc2626;
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(234, 88, 12, 0.1);
+            --shadow-soft: 0 10px 40px -10px rgba(234, 88, 12, 0.15);
+            --shadow-hover: 0 20px 50px -12px rgba(234, 88, 12, 0.25);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(234, 88, 12, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(220, 38, 38, 0.03) 0%, transparent 40%);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .brand-font {
+            font-family: 'Clash Display', sans-serif;
+            letter-spacing: 0.01em;
+        }
+
+        .tilt-card {
+            background: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .tilt-card:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .hero-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        input,
+        textarea,
+        select {
+            background-color: #fff7ed !important;
+            border: 1px solid #fed7aa !important;
+            color: #431407 !important;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--accent) !important;
+            background-color: white !important;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        }
+
+        .section-view {
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: translateY(10px);
+        }
+
+        .section-view.active {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            position: relative;
+            z-index: 10;
+        }
+
+        .trending-bg-mesh {
+            background-color: #1a0500;
+            background-image:
+                radial-gradient(at 0% 0%, hsla(15, 80%, 10%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(25, 80%, 20%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(0, 80%, 20%, 1) 0, transparent 50%);
+            position: relative;
+        }
+
+        .bg-brand {
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%) !important;
+        }
+
+        .bg-brand-dark {
+            background-color: #fff1f2 !important;
+            color: #7f1d1d !important;
+            border-bottom: 1px solid #fecaca;
+        }
+
+        .category-active {
+            border-bottom: 3px solid var(--brand-red);
+            color: var(--brand-red) !important;
+            font-weight: 800;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #fff7ed;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #fdba74;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-btn.active {
+            color: var(--brand-red) !important;
+        }
+
+        .size-btn.active-size {
+            background-color: #ea580c !important;
+            color: white !important;
+            border-color: #ea580c !important;
+        }
+
+        #search-input {
+            background-color: white !important;
+            border: 1px solid #fed7aa !important;
+            color: #2a0a0a !important;
+        }
+
+        /* Add this to your existing CSS in index.html */
+        #home-slides-container img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        #home-slides-container:hover img {
+            transform: scale(1.05);
+        }
+
+        /* For the background overlay to make logo more visible */
+        #home-slides-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            z-index: 1;
+        }
+
+        #home-slides-container>div {
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Remove or adjust the existing gradient if it's too dark */
+        #home-slides-container .absolute.inset-0.bg-gradient-to-t {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.3) 0%, transparent 50%);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen selection:bg-orange-200 selection:text-orange-900">
+
+    <div id="overlay-backdrop" onclick="closeAllOverlays()"
+        class="fixed inset-0 bg-orange-900/20 backdrop-blur-sm z-[85] hidden transition-opacity"></div>
+
+    <aside id="sidebar"
+        class="fixed top-0 left-0 h-full w-80 bg-white border-r border-orange-100 z-[90] transform -translate-x-full flex flex-col transition-transform duration-300 shadow-2xl">
+        <div
+            class="font-bold text-2xl tracking-tighter brand-font text-orange-900 p-6 flex justify-between items-center">
+            <span>HOT FOOD<span class="text-orange-600">.</span></span>
+            <button type="button" onclick="toggleSidebar()" class="text-gray-400 hover:text-orange-600 transition"><i
+                    data-lucide="x"></i></button>
+        </div>
+
+        <div class="p-6 border-b border-orange-50 pt-0">
+            <div id="sidebar-user-info" class="hidden">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full border-2 border-orange-200 flex items-center justify-center text-orange-600 font-bold text-xl overflow-hidden bg-orange-50"
+                        id="sidebar-avatar"></div>
+                    <div>
+                        <p class="font-bold text-lg text-orange-900 brand-font" id="sidebar-name">Guest</p>
+                        <p class="text-xs text-gray-500" id="sidebar-email">guest@email.com</p>
+                    </div>
+                </div>
+            </div>
+            <div id="sidebar-guest-info">
+                <p class="text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">Hungry?</p>
+                <button onclick="closeAllOverlays(); openAuth('login')"
+                    class="w-full py-3 bg-orange-600 text-white font-bold text-sm uppercase tracking-wide hover:bg-orange-700 transition-colors rounded-lg shadow-lg shadow-orange-200">Login
+                    / Sign Up</button>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            <button onclick="navigate('home')"
+                class="w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="utensils" class="mr-4 w-5 h-5 text-orange-500"></i> Home
+            </button>
+
+            <button onclick="navigate('menu')"
+                class="w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="layout-grid" class="mr-4 w-5 h-5 text-orange-500"></i> Menu
+            </button>
+
+            <button onclick="navigate('events')"
+                class="w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="calendar" class="mr-4 w-5 h-5 text-orange-500"></i> Event Booking
+            </button>
+            <button onclick="navigate('my-events')" id="nav-my-events"
+                class="nav-btn w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="calendar-check" class="mr-4 w-5 h-5 text-orange-500"></i> My Bookings
+            </button>
+            <button onclick="navigate('profile')"
+                class="w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="user" class="mr-4 w-5 h-5 text-orange-500"></i> My Profile
+            </button>
+
+            <div class="border-t border-orange-50 my-2 pt-2"></div>
+
+            <button onclick="navigate('cart')"
+                class="w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="shopping-bag" class="mr-4 w-5 h-5 text-orange-500"></i> Cart
+                <span id="sidebar-cart-count"
+                    class="ml-auto bg-orange-600 text-white text-xs px-2.5 py-1 rounded-full font-bold hidden">0</span>
+            </button>
+            <button onclick="navigate('orders')"
+                class="w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium"><i
+                    data-lucide="clock" class="mr-4 w-5 h-5 text-orange-500"></i> Order History</button>
+            <button onclick="navigate('reviews')" id="nav-reviews"
+                class="nav-btn w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="star" class="mr-4 w-5 h-5 text-orange-500"></i> Customer Reviews
+            </button>
+            <button onclick="navigate('blog')" id="nav-blog-side"
+                class="nav-btn w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+                <i data-lucide="feather" class="mr-4 w-5 h-5 text-orange-500"></i> Food Tales (Blog)
+            </button>
+        </nav>
+        <button onclick="window.location.href='admin.html'" id="nav-admin"
+            class="w-full flex items-center p-3 hover:bg-orange-50 rounded-xl text-gray-600 hover:text-orange-700 transition font-medium">
+            <i data-lucide="shield" class="mr-4 w-5 h-5 text-orange-500"></i>
+            Admin Panel
+        </button>
+
+        <div class="p-6 border-t border-orange-50" id="sidebar-logout-btn" style="display:none;">
+            <button onclick="logout()"
+                class="flex items-center w-full text-red-500 hover:bg-red-50 p-3 rounded-xl font-bold transition"><i
+                    data-lucide="log-out" class="mr-3 w-5 h-5"></i> Log Out</button>
+        </div>
+    </aside>
+
+    <header class="sticky top-0 z-[50] bg-brand text-white shadow-lg transition-all duration-300">
+        <div class="container mx-auto px-3 py-3 flex items-center gap-3">
+            <button onclick="toggleSidebar()" class="p-1 rounded-lg hover:bg-white/10 transition flex-shrink-0">
+                <i data-lucide="menu" class="w-6 h-6 text-white"></i>
+            </button>
+
+            <div class="flex-1">
+                <h1 class="text-xl font-bold brand-font">HOT FOOD</h1>
+                <p class="text-xs text-orange-100">Traditional Maharashtrian & Sweets</p>
+            </div>
+
+            <button onclick="navigate('cart')" class="relative p-1">
+                <i data-lucide="shopping-cart" class="w-6 h-6 text-white"></i>
+                <span id="header-cart-count"
+                    class="absolute -top-1 -right-1 bg-yellow-400 text-red-900 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white hidden">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div id="recent-view-section" class="hidden container mx-auto px-4 mt-6 mb-8">
+        <div class="bg-gradient-to-r from-orange-600 to-red-700 rounded-2xl p-4 relative overflow-hidden shadow-lg">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+
+            <div class="relative z-10 mb-4">
+                <h3 class="text-white text-lg font-bold flex items-center gap-2">
+                    <span id="recent-user-name">Guest</span>, order again?
+                </h3>
+                <p class="text-orange-100 text-xs">Your recent orders</p>
+            </div>
+
+            <div id="recent-items-container" class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+            </div>
+        </div>
+    </div>
+
+
+    <main class="flex-grow relative z-10">
+
+        <div id="view-home" class="section-view active pt-6">
+            <div class="mb-8 container mx-auto px-4">
+                <div id="home-slides-container"
+                    class="relative w-full h-[250px] md:h-[450px] rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-white flex items-center justify-center">
+
+                    <div class="absolute inset-0 w-full h-full z-10 flex items-center justify-center p-4">
+                        <img src="img/logo.png" class="max-w-full max-h-full object-contain" alt="HOT FOOD Logo"
+                            fetchpriority="high">
+                    </div>
+
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-20 pointer-events-none">
+                        <div class="absolute bottom-6 left-6 text-white">
+                            <h2 class="text-2xl md:text-5xl font-black brand-font mb-1 drop-shadow-md">TRADITIONAL TASTE
+                            </h2>
+                            <p class="text-xs md:text-lg font-medium opacity-90">Authentic Varan Batti & Sweets</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mx-auto px-4 py-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-orange-950 brand-font mb-4">Our Specialty Dishes</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Experience authentic Maharashtrian flavors and
+                        traditional sweets made with love and traditional recipes.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <div onclick="openProductDetail('maharashtrian')"
+                        class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer group hover:shadow-xl transition-all duration-300">
+                        <div class="h-64 overflow-hidden">
+                            <img src="https://i.ytimg.com/vi/io7C2sqcHTY/maxresdefault.jpg" alt="Maharashtrian Food"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Maharashtrian Special</h3>
+                            <p class="text-gray-600 mb-4">Authentic traditional dishes including Varan Batti and
+                                Vangyachi Bhaji</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-orange-600 font-bold text-xl">From ₹180</span>
+                                <button
+                                    class="px-6 py-2 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">View</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div onclick="openProductDetail('sweets')"
+                        class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer group hover:shadow-xl transition-all duration-300">
+                        <div class="h-64 overflow-hidden">
+                            <img src="https://tse2.mm.bing.net/th/id/OIP.CtP38dGkIPoctOMhzkggkwHaFj?pid=Api&P=0&h=180"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                                alt="Traditional Sweets">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Traditional Sweets</h3>
+                            <p class="text-gray-600 mb-4">Delicious Gulab Jamun and Kaju Barfi made with traditional
+                                recipes</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-orange-600 font-bold text-xl">From ₹120</span>
+                                <button
+                                    class="px-6 py-2 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">View</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div onclick="navigate('menu')"
+                        class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer group hover:shadow-xl transition-all duration-300">
+                        <div class="h-64 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=600&q=80"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                                alt="Cold Drinks">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Cold Drinks</h3>
+                            <p class="text-gray-600 mb-4">Chilled Sprite, Thums Up & More</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-orange-600 font-bold text-xl">From ₹50</span>
+                                <button
+                                    class="px-6 py-2 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="bg-gradient-to-r from-orange-50 to-red-50 p-8 rounded-3xl mb-16">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-black text-orange-950 brand-font mb-4">Event Catering Services</h2>
+                    <p class="text-gray-600 mb-6">Book our traditional food for your special occasions</p>
+                    <button onclick="navigate('events')"
+                        class="px-8 py-3 bg-orange-600 text-white font-bold rounded-full hover:bg-orange-700 transition shadow-lg">Book
+                        Event Catering</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        <div id="view-blog" class="section-view container mx-auto px-4 py-8 max-w-4xl">
+            <div class="text-center mb-10">
+                <span class="text-orange-600 font-bold tracking-widest uppercase text-xs">Our Stories</span>
+                <h2 class="text-4xl font-black text-orange-950 brand-font mt-2">The Spicy Journal</h2>
+                <p class="text-gray-500 mt-2">Explore the culture, recipes, and sweetness of Maharashtra.</p>
+            </div>
+
+            <div class="group relative rounded-3xl overflow-hidden shadow-2xl mb-12 cursor-pointer h-[400px]">
+                <img src="img/blog.jpg"
+                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    alt="Indian Spices">
+
+            </div>
+
+            <div id="blog-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            </div>
+        </div>
+        <div id="view-menu" class="section-view container mx-auto px-4 py-8">
+            <h2 class="text-3xl font-black mb-10 text-orange-950 brand-font text-center">Our Menu</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
+                <div
+                    class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-64 overflow-hidden">
+                        <img src="https://i.ytimg.com/vi/io7C2sqcHTY/maxresdefault.jpg"
+                            class="w-full h-full object-cover hover:scale-110 transition duration-700"
+                            alt="Varan Batti">
+                    </div>
+
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-900">Varan Batti</h3>
+                            <span class="text-orange-600 font-bold text-xl">₹250</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">Traditional Maharashtrian dish consisting of spicy dal
+                            (varan) and wheat dumplings (batti) served with ghee.</p>
+                        <button onclick="addToCart('varan_batti')"
+                            class="w-full py-3 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">
+                            Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-64 overflow-hidden">
+                        <img src="https://i.ytimg.com/vi/mi1u1Vww5Bs/maxresdefault.jpg"
+                            class="w-full h-full object-cover hover:scale-110 transition duration-700"
+                            alt="Vangyachi Bhaji">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-900">Vangyachi Bhaji</h3>
+                            <span class="text-orange-600 font-bold text-xl">₹180</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">Spicy and flavorful stuffed eggplant curry cooked in
+                            peanut masala gravy.</p>
+                        <button onclick="addToCart('vangyachi_bhaji')"
+                            class="w-full py-3 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">
+                            Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-64 overflow-hidden">
+                        <img src="https://tse4.mm.bing.net/th/id/OIP.CAtBpWIDodCzw7gVR5MS1wHaE-?pid=Api&P=0&h=180"
+                            class="w-full h-full object-cover hover:scale-110 transition duration-700"
+                            alt="Gulab Jamun">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-900">Gulab Jamun</h3>
+                            <span class="text-orange-600 font-bold text-xl">₹120</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">Soft milk solids balls soaked in rose-flavored sugar
+                            syrup. (4 pieces)</p>
+                        <button onclick="addToCart('gulab_jamun')"
+                            class="w-full py-3 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">
+                            Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-64 overflow-hidden">
+                        <img src="https://tse1.mm.bing.net/th/id/OIP.sx-WMFTfW1tFCHrIdGgVFAHaEK?pid=Api&P=0&h=180"
+                            class="w-full h-full object-cover hover:scale-110 transition duration-700" alt="Kaju Barfi">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-900">Kaju Barfi</h3>
+                            <span class="text-orange-600 font-bold text-xl">₹200</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">Diamond-shaped rich cashew fudge topped with silver leaf.
+                            (250g)</p>
+                        <button onclick="addToCart('kaju_barfi')"
+                            class="w-full py-3 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">
+                            Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=600&q=80"
+                            class="w-full h-full object-cover hover:scale-110 transition duration-700" alt="Sprite">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-900">Sprite</h3>
+                            <span class="text-orange-600 font-bold text-xl">₹50</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">Chilled Lemon-Lime Flavored Soft Drink (750ml).</p>
+                        <button onclick="addToCart('sprite')"
+                            class="w-full py-3 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">
+                            Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&q=80"
+                            class="w-full h-full object-cover hover:scale-110 transition duration-700" alt="Thums Up">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-gray-900">Thums Up</h3>
+                            <span class="text-orange-600 font-bold text-xl">₹50</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">Strong & Fizzy Cola Drink (750ml).</p>
+                        <button onclick="addToCart('thums_up')"
+                            class="w-full py-3 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition">
+                            Add to Order
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+        <div id="view-events" class="section-view container mx-auto px-4 py-8 max-w-4xl">
+            <h2 class="text-3xl font-black mb-10 text-orange-950 brand-font text-center">Event Catering Booking</h2>
+
+            <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+                <p class="text-gray-600 mb-8 text-center">Book our traditional Maharashtrian food and sweets for your
+                    special occasions</p>
+
+                <form id="event-booking-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" name="name" required class="w-full p-3 rounded-xl border border-gray-300"
+                                placeholder="Your name">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Phone Number *</label>
+                            <input type="tel" name="phone" required class="w-full p-3 rounded-xl border border-gray-300"
+                                placeholder="Your phone number">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Email Address *</label>
+                        <input type="email" name="email" required class="w-full p-3 rounded-xl border border-gray-300"
+                            placeholder="Your email">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Event Type *</label>
+                        <select name="event_type" required class="w-full p-3 rounded-xl border border-gray-300">
+                            <option value="">Select event type</option>
+                            <option value="marriage">Marriage</option>
+                            <option value="birthday">Birthday</option>
+                            <option value="anniversary">Anniversary</option>
+                            <option value="death_anniversary">Death Anniversary</option>
+                            <option value="corporate">Corporate Event</option>
+                            <option value="religious">Religious Ceremony</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Event Date *</label>
+                            <input type="date" name="event_date" required
+                                class="w-full p-3 rounded-xl border border-gray-300">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Number of Guests *</label>
+                            <input type="number" name="guests" required min="10"
+                                class="w-full p-3 rounded-xl border border-gray-300" placeholder="Approximate number">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Event Address *</label>
+                        <textarea name="address" required rows="3" class="w-full p-3 rounded-xl border border-gray-300"
+                            placeholder="Full address of the event"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Special Requirements</label>
+                        <textarea name="requirements" rows="3" class="w-full p-3 rounded-xl border border-gray-300"
+                            placeholder="Any special requests or dietary restrictions"></textarea>
+                    </div>
+
+                    <div class="bg-orange-50 p-6 rounded-2xl">
+                        <h3 class="font-bold text-orange-800 mb-4">Select Food Items for Catering</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="food_items" value="varan_batti"
+                                        class="mr-3 h-5 w-5 text-orange-600">
+                                    <label class="text-gray-700">Varan Batti (₹250 per plate)</label>
+                                </div>
+                                <input type="number" name="varan_batti_qty" min="0"
+                                    class="w-20 p-2 rounded border border-gray-300" placeholder="Qty">
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="food_items" value="vangyachi_bhaji"
+                                        class="mr-3 h-5 w-5 text-orange-600">
+                                    <label class="text-gray-700">Vangyachi Bhaji (₹180 per plate)</label>
+                                </div>
+                                <input type="number" name="vangyachi_bhaji_qty" min="0"
+                                    class="w-20 p-2 rounded border border-gray-300" placeholder="Qty">
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="food_items" value="gulab_jamun"
+                                        class="mr-3 h-5 w-5 text-orange-600">
+                                    <label class="text-gray-700">Gulab Jamun (₹120 per 4 pieces)</label>
+                                </div>
+                                <input type="number" name="gulab_jamun_qty" min="0"
+                                    class="w-20 p-2 rounded border border-gray-300" placeholder="Qty">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="food_items" value="sprite"
+                                        class="mr-3 h-5 w-5 text-orange-600">
+                                    <label class="text-gray-700">Sprite (₹50 per 750ml)</label>
+                                </div>
+                                <input type="number" name="sprite_qty" min="0"
+                                    class="w-20 p-2 rounded border border-gray-300" placeholder="Qty">
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="food_items" value="thums_up"
+                                        class="mr-3 h-5 w-5 text-orange-600">
+                                    <label class="text-gray-700">Thums Up (₹50 per 750ml)</label>
+                                </div>
+                                <input type="number" name="thums_up_qty" min="0"
+                                    class="w-20 p-2 rounded border border-gray-300" placeholder="Qty">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="food_items" value="kaju_barfi"
+                                        class="mr-3 h-5 w-5 text-orange-600">
+                                    <label class="text-gray-700">Kaju Barfi (₹200 per 250g)</label>
+                                </div>
+                                <input type="number" name="kaju_barfi_qty" min="0"
+                                    class="w-20 p-2 rounded border border-gray-300" placeholder="Qty">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <button type="submit"
+                            class="w-full py-4 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition text-lg">
+                            Submit Booking Request
+                        </button>
+                    </div>
+
+                    <p class="text-sm text-gray-500 text-center">
+                        We'll contact you within 24 hours to confirm your booking and discuss details.
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <div id="view-profile" class="section-view container mx-auto px-4 py-8 max-w-4xl">
+            <h2 class="text-3xl font-black mb-10 text-orange-950 brand-font text-center">My Profile</h2>
+            <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-xl">
+                <div class="flex items-center gap-6 mb-8 pb-8 border-b border-gray-100">
+                    <div class="w-20 h-20 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-3xl"
+                        id="profile-avatar-big">G</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900" id="profile-display-name">Guest</h3>
+                        <p class="text-gray-500" id="profile-display-email">guest@email.com</p>
+                    </div>
+                </div>
+                <form onsubmit="saveProfile(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label
+                                class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Name</label>
+                            <input type="text" id="prof-name" class="w-full p-4 rounded-xl font-bold text-gray-800"
+                                required>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Phone</label>
+                            <input type="tel" id="prof-mobile" class="w-full p-4 rounded-xl font-bold text-gray-800">
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Address</label>
+                        <input type="text" id="prof-address" class="w-full p-4 rounded-xl font-bold text-gray-800">
+                    </div>
+                    <div class="pt-6 flex justify-end">
+                        <button type="submit"
+                            class="px-8 py-4 bg-orange-900 text-white font-bold rounded-xl shadow-lg hover:bg-orange-800 transition uppercase tracking-wider">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="view-cart" class="section-view container mx-auto px-4 py-8 max-w-4xl">
+            <h2 class="text-3xl font-black mb-10 text-orange-950 brand-font text-center">Your Order</h2>
+            <div id="cart-items" class="space-y-4"></div>
+            <div id="cart-empty" class="text-center py-32 bg-white border border-dashed border-gray-200 rounded-3xl">
+                <i data-lucide="shopping-bag" class="mx-auto w-12 h-12 text-gray-300 mb-4"></i>
+                <p class="text-gray-400">Your cart is empty.</p>
+                <button onclick="navigate('menu')" class="mt-4 text-orange-600 font-bold uppercase">Browse Menu</button>
+            </div>
+            <div id="cart-summary" class="mt-12 bg-white p-8 rounded-3xl border border-gray-100 shadow-xl hidden">
+                <div class="space-y-4 mb-8 text-gray-500 text-sm">
+                    <div class="flex justify-between"><span>Item Total</span><span id="summary-subtotal"
+                            class="text-gray-900 font-bold">₹0</span></div>
+                    <div class="flex justify-between text-orange-600"><span>Delivery Fee</span><span>₹30.00</span></div>
+                </div>
+                <div class="flex justify-between text-2xl font-bold border-t border-gray-100 pt-6 mb-8 text-orange-950">
+                    <span>To Pay</span><span id="summary-total">₹0</span>
+                </div>
+                <button onclick="openCheckout()"
+                    class="w-full py-5 bg-orange-900 text-white font-bold rounded-2xl uppercase tracking-wider hover:bg-orange-800 shadow-lg shadow-orange-200 transition">Checkout</button>
+            </div>
+        </div>
+
+        <div id="view-orders" class="section-view container mx-auto px-4 py-8 max-w-4xl">
+            <h2 class="text-3xl font-black mb-10 text-orange-950 brand-font text-center">Order History</h2>
+            <div id="orders-list" class="space-y-6">
+                <div class="text-center py-16 bg-white border border-dashed border-gray-200 rounded-3xl">
+                    <i data-lucide="package" class="mx-auto w-12 h-12 text-gray-300 mb-4"></i>
+                    <p class="text-gray-400">No orders yet</p>
+                    <button onclick="navigate('menu')" class="mt-4 text-orange-600 font-bold uppercase">Start
+                        Ordering</button>
+                </div>
+            </div>
+        </div>
+        <div id="view-my-events" class="section-view container mx-auto px-4 py-8 max-w-4xl">
+            <h2 class="text-3xl font-black mb-10 text-orange-950 brand-font text-center">My Event Bookings</h2>
+
+            <div id="my-events-list" class="space-y-6">
+                <div class="text-center py-16 bg-white border border-dashed border-gray-200 rounded-3xl">
+                    <i data-lucide="calendar-clock" class="mx-auto w-12 h-12 text-gray-300 mb-4"></i>
+                    <p class="text-gray-400">No bookings found</p>
+                    <button onclick="navigate('events')" class="mt-4 text-orange-600 font-bold uppercase">Book an
+                        Event</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-100 pt-12 pb-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold tracking-tighter mb-4 brand-font text-orange-950">HOT FOOD<span
+                        class="text-orange-600">.</span></h2>
+                <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                    Traditional Maharashtrian food and sweets. Catering available for all occasions.
+                </p>
+            </div>
+            <div class="border-t border-gray-100 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2023 HOT FOOD. All rights reserved.</p>
+                <p class="mt-2">Contact: +91 9876543210 | info@hotfood.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="checkout-modal" class="fixed inset-0 z-[70] hidden bg-orange-900/40 overflow-y-auto backdrop-blur-md">
+        <div class="container mx-auto px-4 py-12 max-w-lg">
+            <div class="bg-white p-8 rounded-3xl shadow-2xl">
+                <div class="flex items-center gap-4 mb-8">
+                    <button type="button" onclick="closeCheckout()"
+                        class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 text-gray-600"><i
+                            data-lucide="arrow-left"></i></button>
+                    <h2 class="text-2xl font-bold text-orange-950 brand-font uppercase">Delivery Details</h2>
+                </div>
+                <form onsubmit="processOrder(event)" class="space-y-6">
+                    <div class="space-y-4">
+                        <input type="text" id="checkout-name" placeholder="Name" required class="w-full p-4 rounded-xl">
+                        <input type="text" id="checkout-street" placeholder="Delivery Address" required
+                            class="w-full p-4 rounded-xl">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="tel" id="checkout-phone" placeholder="Phone" required
+                                class="w-full p-4 rounded-xl">
+                            <input type="text" id="checkout-pincode" placeholder="Pincode" required
+                                class="w-full p-4 rounded-xl">
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-gray-400 text-xs uppercase tracking-widest">Payment</h3>
+                        <label
+                            class="border border-gray-200 bg-gray-50 p-4 rounded-xl flex flex-col gap-2 cursor-pointer hover:border-orange-600 transition has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50">
+                            <input type="radio" name="payment-mode" value="Cash on Delivery" checked
+                                class="accent-orange-600 w-4 h-4 mb-2">
+                            <span class="font-bold text-gray-900 text-sm">Pay on Delivery</span>
+                        </label>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <div class="flex justify-between font-black text-xl text-orange-900"><span>Total</span><span
+                                id="checkout-final-amount">₹0</span></div>
+                    </div>
+                    <button type="submit"
+                        class="w-full py-5 bg-orange-900 text-white rounded-xl font-bold uppercase tracking-wider shadow-lg shadow-orange-200 hover:bg-orange-800 transition">Place
+                        Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="cust-invoice-modal"
+        class="fixed inset-0 z-[200] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in">
+
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <i data-lucide="receipt" class="w-5 h-5 text-orange-600"></i> Order Receipt
+                </h3>
+                <button onclick="closeCustInvoice()"
+                    class="p-2 hover:bg-gray-200 rounded-full transition text-gray-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-8 overflow-y-auto bg-white custom-scrollbar" id="printable-area">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-black text-orange-600 tracking-tighter brand-font">HOT FOOD.</h1>
+                    <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Authentic Taste Delivered</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Billed To</p>
+                        <h4 class="font-bold text-gray-800 text-sm" id="inv-cust-name">Customer Name</h4>
+                        <p class="text-xs text-gray-500 mt-1" id="inv-cust-phone">+91 9999999999</p>
+                        <p class="text-xs text-gray-500" id="inv-cust-addr">Pune, Maharashtra</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Order Info</p>
+                        <h4 class="font-mono font-bold text-gray-800 text-sm" id="inv-order-id">#ORD-8821</h4>
+                        <p class="text-xs text-gray-500 mt-1" id="inv-date">12 Oct 2025</p>
+                        <span
+                            class="inline-block mt-2 px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded uppercase">Paid
+                            Online</span>
+                    </div>
+                </div>
+
+                <div class="border-t border-b border-dashed border-gray-200 py-4 mb-6">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr>
+                                <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase">Item</th>
+                                <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase text-center">Qty</th>
+                                <th class="pb-3 text-[10px] font-bold text-gray-400 uppercase text-right">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inv-items-list" class="text-sm text-gray-600">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="space-y-2 text-right">
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>Subtotal</span>
+                        <span class="font-medium" id="inv-subtotal">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>Delivery Fee</span>
+                        <span class="font-medium">- ₹30</span>
+                    </div>
+                    <div
+                        class="flex justify-between text-lg font-black text-gray-900 pt-2 border-t border-gray-100 mt-2">
+                        <span>Total Paid</span>
+                        <span class="text-orange-600" id="inv-total">₹0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 border-t border-gray-100 bg-gray-50 flex gap-3">
+                <button onclick="window.print()"
+                    class="flex-1 py-3 bg-slate-800 text-white font-bold rounded-xl text-sm hover:bg-slate-700 transition flex items-center justify-center gap-2">
+                    <i data-lucide="printer" class="w-4 h-4"></i> Print Bill
+                </button>
+                <button onclick="closeCustInvoice()"
+                    class="px-6 py-3 border border-gray-200 text-gray-600 font-bold rounded-xl text-sm hover:bg-white transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #cust-invoice-modal,
+            #printable-area,
+            #printable-area * {
+                visibility: visible;
+            }
+
+            #cust-invoice-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+                padding: 0;
+            }
+
+            #printable-area {
+                padding: 20px;
+            }
+
+            button {
+                display: none !important;
+            }
+        }
+    </style>
+    <div
+        class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-[80] md:hidden flex justify-around items-center py-3">
+        <button onclick="navigate('home')"
+            class="nav-btn active flex flex-col items-center gap-1 text-gray-400 transition" id="nav-home">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button onclick="navigate('menu')" class="nav-btn flex flex-col items-center gap-1 text-gray-400 transition"
+            id="nav-menu">
+            <i data-lucide="utensils" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">Menu</span>
+        </button>
+        <button onclick="navigate('events')" class="nav-btn flex flex-col items-center gap-1 text-gray-400 transition"
+            id="nav-events">
+            <i data-lucide="calendar" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">Events</span>
+        </button>
+        <button onclick="navigate('cart')"
+            class="nav-btn flex flex-col items-center gap-1 text-gray-400 transition relative" id="nav-cart">
+            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">Cart</span>
+            <span id="bottom-cart-count"
+                class="absolute -top-1 right-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+        </button>
+        <button onclick="navigate('blog')" class="nav-btn flex flex-col items-center gap-1 text-gray-400 transition"
+            id="nav-blog">
+            <i data-lucide="book-open" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">Blog</span>
+        </button>
+    </div>
+    <div id="tracking-modal"
+        class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+            <div class="bg-orange-600 p-6 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-bold brand-font">Track Order</h3>
+                    <p class="text-xs text-orange-100 opacity-80" id="track-order-id">#ID</p>
+                </div>
+                <button onclick="closeTracking()" class="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-8">
+                <div id="track-otp-container"
+                    class="hidden mb-8 text-center bg-orange-50 border border-orange-100 p-4 rounded-xl">
+                    <p class="text-xs font-bold text-orange-600 uppercase tracking-widest mb-1">Share OTP with Delivery
+                        Agent</p>
+                    <div class="text-3xl font-black text-gray-800 tracking-[0.5em]" id="track-otp-value">0000</div>
+                </div>
+
+                <div
+                    class="space-y-6 relative before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100">
+
+                    <div class="relative flex gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 bg-green-100 text-green-600 border-2 border-white shadow-sm"
+                            id="step-icon-confirmed">
+                            <i data-lucide="check" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Order Confirmed</h4>
+                            <p class="text-xs text-gray-500">Your order has been received.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 bg-gray-100 text-gray-400 border-2 border-white shadow-sm transition-colors duration-300"
+                            id="step-icon-packed">
+                            <i data-lucide="package" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Packed</h4>
+                            <p class="text-xs text-gray-500">Kitchen has prepared your food.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 bg-gray-100 text-gray-400 border-2 border-white shadow-sm transition-colors duration-300"
+                            id="step-icon-shipped">
+                            <i data-lucide="truck" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Shipped</h4>
+                            <p class="text-xs text-gray-500">Order is on the way to delivery hub.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 bg-gray-100 text-gray-400 border-2 border-white shadow-sm transition-colors duration-300"
+                            id="step-icon-out_for_delivery">
+                            <i data-lucide="bike" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Out for Delivery</h4>
+                            <p class="text-xs text-gray-500">Agent is near your location.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex gap-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center z-10 bg-gray-100 text-gray-400 border-2 border-white shadow-sm transition-colors duration-300"
+                            id="step-icon-delivered">
+                            <i data-lucide="home" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Delivered</h4>
+                            <p class="text-xs text-gray-500">Enjoy your meal!</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-reviews" class="section-view container mx-auto px-4 py-8 max-w-4xl">
+        <h2 class="text-3xl font-black mb-10 text-orange-950 brand-font text-center">Customer Reviews</h2>
+        <div id="loading-reviews" class="hidden text-center py-12">
+            <i data-lucide="loader-2" class="w-8 h-8 text-orange-600 animate-spin mx-auto mb-4"></i>
+            <p class="text-gray-500">Loading food stories...</p>
+        </div>
+        <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Reviews will be injected here -->
+        </div>
+        <div id="no-reviews" class="hidden text-center py-16 bg-white border border-dashed border-gray-200 rounded-3xl">
+            <i data-lucide="message-square" class="mx-auto w-12 h-12 text-gray-300 mb-4"></i>
+            <p class="text-gray-400">No reviews yet. Be the first to review!</p>
+
+
+
+        </div>
+    </div>
+    <div id="auth-modal"
+        class="fixed inset-0 z-[100] hidden bg-orange-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+
+        <div id="login-box"
+            class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-8 relative transition-all duration-300 transform scale-100 opacity-100">
+            <button onclick="closeAllOverlays()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-black brand-font text-orange-900">Welcome Back</h2>
+                <p class="text-sm text-gray-500">Login to continue eating</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email</label>
+                    <input type="email" id="login-email"
+                        class="w-full p-3 rounded-xl border border-gray-200 focus:border-orange-500 outline-none"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Password</label>
+                    <input type="password" id="login-pass"
+                        class="w-full p-3 rounded-xl border border-gray-200 focus:border-orange-500 outline-none"
+                        required>
+                </div>
+                <button type="submit"
+                    class="w-full py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition shadow-lg shadow-orange-200">
+                    Log In
+                </button>
+            </form>
+
+            <div class="mt-6">
+                <div class="relative mb-4">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-200"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm"><span
+                            class="px-2 bg-white text-gray-500 text-xs">Or continue with</span></div>
+                </div>
+
+                <div class="flex justify-center w-full">
+                    <div id="g_id_onload"
+                        data-client_id="322997860332-p6g82li62crt2b7nmpe5sf1k2cd11e0v.apps.googleusercontent.com"
+                        data-context="signin" data-ux_mode="popup" data-callback="handleGoogleLogin"
+                        data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                        data-text="signin_with" data-size="large" data-logo_alignment="left" data-width="320">
+                    </div>
+                </div>
+            </div>
+
+            <p class="mt-6 text-center text-sm text-gray-500">
+                New here? <button onclick="switchAuth('register')"
+                    class="text-orange-600 font-bold hover:underline">Create Account</button>
+            </p>
+        </div>
+
+        <div id="register-box"
+            class="hidden bg-white w-full max-w-sm rounded-3xl shadow-2xl p-8 relative transition-all duration-300">
+            <button onclick="closeAllOverlays()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-black brand-font text-orange-900">Join Hot Food</h2>
+                <p class="text-sm text-gray-500">Create an account to order</p>
+            </div>
+
+            <form onsubmit="handleRegister(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Full
+                        Name</label>
+                    <input type="text" id="reg-name"
+                        class="w-full p-3 rounded-xl border border-gray-200 focus:border-orange-500 outline-none"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Email</label>
+                    <input type="email" id="reg-email"
+                        class="w-full p-3 rounded-xl border border-gray-200 focus:border-orange-500 outline-none"
+                        required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Password</label>
+                    <input type="password" id="reg-pass"
+                        class="w-full p-3 rounded-xl border border-gray-200 focus:border-orange-500 outline-none"
+                        required>
+                </div>
+                <button type="submit"
+                    class="w-full py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition shadow-lg shadow-orange-200">
+                    Sign Up
+                </button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-gray-500">
+                Already have an account? <button onclick="switchAuth('login')"
+                    class="text-orange-600 font-bold hover:underline">Login</button>
+            </p>
+        </div>
+    </div>
+    <div id="checkout-modal">...</div>
+    <!-- Image View Modal (Lightbox) -->
+    <div id="image-modal" onclick="closeImageModal()"
+        class="fixed inset-0 z-[150] hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="relative max-w-4xl w-full max-h-screen flex items-center justify-center">
+            <button onclick="closeImageModal()"
+                class="absolute -top-12 right-0 text-white hover:text-orange-500 transition">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <img id="modal-image-full" src=""
+                class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-zoom-in"
+                onclick="event.stopPropagation()">
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="review-modal"
+        class="fixed inset-0 z-[100] hidden bg-orange-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 relative">
+            <button onclick="closeReviewModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-black brand-font text-orange-900">Write a Review</h2>
+                <p class="text-sm text-gray-500">Share your experience with us</p>
+            </div>
+
+            <form onsubmit="handleReviewSubmit(event)" class="space-y-4">
+                <input type="hidden" id="review-order-id">
+
+                <div class="flex justify-center gap-2 mb-4">
+                    <div class="flex flex-row-reverse justify-end gap-1">
+                        <input type="radio" id="star5" name="rating" value="5" class="peer hidden" required />
+                        <label for="star5"
+                            class="cursor-pointer text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 peer-hover:text-yellow-400"><i
+                                data-lucide="star" class="w-8 h-8 fill-current"></i></label>
+
+                        <input type="radio" id="star4" name="rating" value="4" class="peer hidden" />
+                        <label for="star4"
+                            class="cursor-pointer text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 peer-hover:text-yellow-400"><i
+                                data-lucide="star" class="w-8 h-8 fill-current"></i></label>
+
+                        <input type="radio" id="star3" name="rating" value="3" class="peer hidden" />
+                        <label for="star3"
+                            class="cursor-pointer text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 peer-hover:text-yellow-400"><i
+                                data-lucide="star" class="w-8 h-8 fill-current"></i></label>
+
+                        <input type="radio" id="star2" name="rating" value="2" class="peer hidden" />
+                        <label for="star2"
+                            class="cursor-pointer text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 peer-hover:text-yellow-400"><i
+                                data-lucide="star" class="w-8 h-8 fill-current"></i></label>
+
+                        <input type="radio" id="star1" name="rating" value="1" class="peer hidden" />
+                        <label for="star1"
+                            class="cursor-pointer text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 peer-hover:text-yellow-400"><i
+                                data-lucide="star" class="w-8 h-8 fill-current"></i></label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Your
+                        Review</label>
+                    <textarea id="review-comment" rows="3"
+                        class="w-full p-3 rounded-xl border border-gray-200 focus:border-orange-500 outline-none resize-none"
+                        placeholder="How was the food?"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Add a Photo
+                        (Optional)</label>
+                    <div
+                        class="relative border-2 border-dashed border-gray-200 rounded-xl p-4 text-center hover:border-orange-300 transition bg-orange-50/50">
+                        <input type="file" id="review-image" accept="image/*"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            onchange="previewImage(this)">
+                        <div id="image-preview-container" class="hidden">
+                            <img id="image-preview" src="" class="h-32 w-full object-cover rounded-lg mx-auto">
+                            <button type="button" onclick="clearImage()"
+                                class="mt-2 text-xs text-red-500 font-bold">Remove</button>
+                        </div>
+                        <div id="upload-placeholder" class="pointer-events-none">
+                            <i data-lucide="camera" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
+                            <span class="text-xs text-gray-500">Click to upload</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="submit-review-btn"
+                    class="w-full py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition shadow-lg shadow-orange-200">
+                    Submit Review
+                </button>
+            </form>
+        </div>
+    </div>
+    <div id="toast"
+        class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-orange-900 text-white px-8 py-4 rounded-full shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 z-[200]">
+        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <span id="toast-msg" class="font-bold text-sm tracking-wide">Notification</span>
+    </div>
+
+    <script src="index.js"></script>
+
+</body>
+
+</html>

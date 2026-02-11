@@ -1,0 +1,2209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Panel | HOT FOOD Event Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@200,400,600,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-orange: #f97316;
+            --brand-red: #dc2626;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+        }
+
+        .brand-font {
+            font-family: 'Clash Display', sans-serif;
+        }
+
+        /* Sidebar Transitions */
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            @apply px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider;
+        }
+
+        .status-pending {
+            @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
+        }
+
+        .status-confirmed {
+            @apply bg-green-100 text-green-800 border border-green-200;
+        }
+
+        .status-completed {
+            @apply bg-blue-100 text-blue-800 border border-blue-200;
+        }
+
+        .status-cancelled {
+            @apply bg-red-100 text-red-800 border border-red-200;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-slate-800">
+
+    <div id="auth-overlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm">
+        <div class="w-full max-w-md p-8 bg-white rounded-3xl shadow-2xl border border-orange-100">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-black brand-font text-orange-900 tracking-tighter">HOT FOOD<span
+                        class="text-orange-600">.</span></h1>
+                <p class="text-slate-500 font-medium mt-2">Admin Portal Access</p>
+            </div>
+
+            <form id="admin-login-form" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Email
+                        Address</label>
+                    <input type="email" id="admin-email-input"
+                        class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:bg-white outline-none transition font-medium"
+                        placeholder="admin@hotfood.com" required>
+                </div>
+                <div>
+                    <label
+                        class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Password</label>
+                    <input type="password" id="admin-password-input"
+                        class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:bg-white outline-none transition font-medium"
+                        placeholder="••••••••" required>
+                </div>
+                <button type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-orange-200 transition transform hover:-translate-y-0.5">Access
+                    Dashboard</button>
+
+                <div class="text-center mt-6">
+                    <button type="button" onclick="showRegisterForm()"
+                        class="text-orange-600 font-bold hover:underline text-sm">Create New Admin Account</button>
+                </div>
+            </form>
+
+            <form id="admin-register-form" class="space-y-5 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Full
+                        Name</label>
+                    <input type="text" id="register-name"
+                        class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition font-medium"
+                        placeholder="Admin Name" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Email
+                        Address</label>
+                    <input type="email" id="register-email"
+                        class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition font-medium"
+                        placeholder="admin@hotfood.com" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Password</label>
+                        <input type="password" id="register-password"
+                            class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition font-medium"
+                            placeholder="••••••" required>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Confirm</label>
+                        <input type="password" id="register-confirm-password"
+                            class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition font-medium"
+                            placeholder="••••••" required>
+                    </div>
+                </div>
+                <div class="flex gap-4 pt-2">
+                    <button type="submit"
+                        class="flex-1 py-4 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition shadow-lg">Register</button>
+                    <button type="button" onclick="showLoginForm()"
+                        class="px-6 py-4 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition">Cancel</button>
+                </div>
+            </form>
+
+            <div id="auth-error"
+                class="hidden mt-6 p-4 bg-red-50 text-red-700 rounded-xl text-sm font-medium flex items-center gap-3 border border-red-100">
+                <i data-lucide="alert-circle" class="w-5 h-5 shrink-0"></i> <span id="auth-error-msg">Error</span>
+            </div>
+            <div id="auth-success"
+                class="hidden mt-6 p-4 bg-green-50 text-green-700 rounded-xl text-sm font-medium flex items-center gap-3 border border-green-100">
+                <i data-lucide="check-circle" class="w-5 h-5 shrink-0"></i> <span id="auth-success-msg">Success</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-layout" class="hidden flex h-screen overflow-hidden bg-slate-50">
+
+        <div id="mobile-backdrop" onclick="toggleSidebar()"
+            class="fixed inset-0 bg-slate-900/50 z-40 md:hidden hidden backdrop-blur-sm transition-opacity"></div>
+
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none md:static">
+            <div class="p-8 border-b border-slate-100 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-black brand-font text-orange-900">HOT FOOD<span
+                            class="text-orange-600">.</span></h1>
+                    <p class="text-xs font-bold text-slate-400 tracking-widest uppercase mt-1">Admin Dashboard</p>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-orange-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <p class="px-4 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 mt-4">Overview</p>
+
+                <button onclick="switchView('dashboard')" id="nav-dashboard"
+                    class="nav-btn w-full flex items-center px-4 py-3.5 text-slate-600 rounded-xl hover:bg-orange-50 hover:text-orange-700 transition group font-medium active-nav">
+                    <i data-lucide="layout-dashboard"
+                        class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i> Dashboard
+                </button>
+
+                <p class="px-4 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 mt-6">Management</p>
+
+                <button onclick="switchView('events')" id="nav-events"
+                    class="nav-btn w-full flex items-center px-4 py-3.5 text-slate-600 rounded-xl hover:bg-orange-50 hover:text-orange-700 transition group font-medium">
+                    <i data-lucide="calendar-days" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                    Event Bookings
+                    <span id="badge-events"
+                        class="ml-auto bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </button>
+
+                <button onclick="switchView('orders')" id="nav-orders"
+                    class="nav-btn w-full flex items-center px-4 py-3.5 text-slate-600 rounded-xl hover:bg-orange-50 hover:text-orange-700 transition group font-medium">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                    Orders
+                </button>
+
+                <button onclick="switchView('customers')" id="nav-customers"
+                    class="nav-btn w-full flex items-center px-4 py-3.5 text-slate-600 rounded-xl hover:bg-orange-50 hover:text-orange-700 transition group font-medium">
+                    <i data-lucide="users" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                    Customers
+                </button>
+
+                <p class="px-4 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 mt-6">Analysis</p>
+
+                <button onclick="switchView('reports')" id="nav-reports"
+                    class="nav-btn w-full flex items-center px-4 py-3.5 text-slate-600 rounded-xl hover:bg-orange-50 hover:text-orange-700 transition group font-medium">
+                    <i data-lucide="bar-chart-2" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                    Reports
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+                <div class="flex items-center gap-3 mb-4 p-2">
+                    <div
+                        class="w-10 h-10 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold shadow-lg shadow-orange-200">
+                        A</div>
+                    <div class="overflow-hidden">
+                        <p class="text-sm font-bold text-slate-900 truncate" id="admin-name">Admin User</p>
+                        <p class="text-xs text-slate-500 truncate" id="admin-email">admin@hotfood.com</p>
+                    </div>
+                </div>
+                <button onclick="adminLogout()"
+                    class="w-full flex items-center justify-center px-4 py-3 text-red-600 bg-white border border-red-100 rounded-xl hover:bg-red-50 hover:border-red-200 transition font-bold text-sm shadow-sm">
+                    <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+            <header
+                class="bg-white/80 backdrop-blur-md border-b border-slate-200 h-20 flex items-center justify-between px-6 sticky top-0 z-30">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()"
+                        class="md:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900" id="page-title">Dashboard</h2>
+                        <p class="text-xs text-slate-500 font-medium hidden sm:block" id="page-subtitle">Overview &
+                            Statistics</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button onclick="refreshData()"
+                        class="p-2.5 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition tooltip-btn"
+                        title="Refresh Data">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                    </button>
+                    <a href="index.html" target="_blank"
+                        class="hidden sm:flex items-center px-4 py-2 bg-slate-100 text-slate-600 text-sm font-bold rounded-xl hover:bg-slate-200 transition">
+                        <i data-lucide="external-link" class="w-4 h-4 mr-2"></i> Visit Site
+                    </a>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth" id="main-scroll">
+
+                <div id="view-dashboard" class="admin-view space-y-8 animate-fade-in">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-green-100 rounded-xl text-green-600">
+                                    <i data-lucide="indian-rupee" class="w-6 h-6"></i>
+                                </div>
+                                <span
+                                    class="bg-green-50 text-green-700 text-xs font-bold px-2 py-1 rounded-lg">+12%</span>
+                            </div>
+                            <p class="text-slate-500 text-sm font-bold">Total Revenue</p>
+                            <h3 class="text-3xl font-black text-slate-900 mt-1" id="total-revenue">₹0</h3>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-purple-100 rounded-xl text-purple-600">
+                                    <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <p class="text-slate-500 text-sm font-bold">Total Events</p>
+                            <h3 class="text-3xl font-black text-slate-900 mt-1" id="total-events">0</h3>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-orange-100 rounded-xl text-orange-600 animate-pulse">
+                                    <i data-lucide="clock" class="w-6 h-6"></i>
+                                </div>
+                                <span class="bg-orange-50 text-orange-700 text-xs font-bold px-2 py-1 rounded-lg">Action
+                                    Needed</span>
+                            </div>
+                            <p class="text-slate-500 text-sm font-bold">Pending Requests</p>
+                            <h3 class="text-3xl font-black text-orange-600 mt-1" id="pending-events">0</h3>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-blue-100 rounded-xl text-blue-600">
+                                    <i data-lucide="users" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <p class="text-slate-500 text-sm font-bold">Total Customers</p>
+                            <h3 class="text-3xl font-black text-slate-900 mt-1" id="total-customers">0</h3>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-gradient-to-r from-orange-600 to-red-600 rounded-3xl p-8 text-white shadow-xl shadow-orange-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl">
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold mb-2" id="dashboard-welcome">Welcome back, Admin!</h3>
+                            <p class="text-orange-100 mb-6 max-w-xl">You have pending event requests that need your
+                                attention. Review them to ensure customer satisfaction.</p>
+                            <button onclick="switchView('events')"
+                                class="px-6 py-3 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition shadow-lg inline-flex items-center">
+                                Review Events <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-events" class="admin-view hidden space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div
+                            class="p-5 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <h3 class="font-bold text-slate-700">All Bookings</h3>
+                            <div class="flex gap-2">
+                                <select onchange="filterEvents(this.value)"
+                                    class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-600 focus:border-orange-500 outline-none">
+                                    <option value="all">All Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Customer Name</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Email</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Mobile No</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="events-table-body" class="divide-y divide-slate-100">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                                            <div class="flex flex-col items-center">
+                                                <i data-lucide="loader-2"
+                                                    class="w-8 h-8 animate-spin mb-2 text-orange-500"></i>
+                                                <p>Loading events...</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-orders" class="admin-view hidden space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-700">Recent Orders</h3>
+                            <button onclick="loadAdminOrders()"
+                                class="text-sm text-orange-600 font-bold hover:underline">Refresh</button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Order ID</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Customer</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Items</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Total</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-table-body" class="divide-y divide-slate-100">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-customers" class="admin-view hidden space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-700">Registered Customers</h3>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full"
+                                id="customer-count-badge">0 Users</span>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Customer Name</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Email</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Mobile No</th>
+
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Total Bill</th>
+
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customers-table-body" class="divide-y divide-slate-100">
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                                            Loading customers...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="view-reports" class="admin-view hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <h3 class="text-xl font-bold text-slate-800">Financial Performance</h3>
+                        <select id="report-period" onchange="loadReports(this.value)"
+                            class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-600 focus:border-orange-500 outline-none cursor-pointer">
+                            <option value="week">This Week</option>
+                            <option value="month" selected>This Month</option>
+                            <option value="year">This Year</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div
+                            class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 text-white shadow-xl shadow-slate-200 relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-2xl">
+                            </div>
+                            <div class="relative z-10">
+                                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Total Revenue
+                                </p>
+                                <h3 class="text-3xl font-black mb-4" id="rep-revenue">₹0</h3>
+                                <div class="flex gap-2 text-xs">
+                                    <span class="bg-white/10 px-2 py-1 rounded">Orders: <span id="rep-rev-orders"
+                                            class="font-bold">₹0</span></span>
+                                    <span class="bg-white/10 px-2 py-1 rounded">Events: <span id="rep-rev-events"
+                                            class="font-bold">₹0</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Total Orders
+                                    </p>
+                                    <h3 class="text-2xl font-black text-slate-800" id="rep-orders-total">0</h3>
+                                </div>
+                                <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="shopping-bag"
+                                        class="w-5 h-5"></i></div>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span
+                                            class="text-green-600 font-bold">Delivered</span><span
+                                            id="rep-ord-del">0</span></div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                        <div id="bar-ord-del" class="bg-green-500 h-1.5 rounded-full" style="width: 0%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span
+                                            class="text-orange-500 font-bold">Pending</span><span
+                                            id="rep-ord-pen">0</span></div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                        <div id="bar-ord-pen" class="bg-orange-500 h-1.5 rounded-full"
+                                            style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Total Events
+                                    </p>
+                                    <h3 class="text-2xl font-black text-slate-800" id="rep-events-total">0</h3>
+                                </div>
+                                <div class="p-2 bg-purple-50 text-purple-600 rounded-lg"><i data-lucide="calendar"
+                                        class="w-5 h-5"></i></div>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span
+                                            class="text-blue-600 font-bold">Completed</span><span
+                                            id="rep-evt-comp">0</span></div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                        <div id="bar-evt-comp" class="bg-blue-500 h-1.5 rounded-full" style="width: 0%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span
+                                            class="text-yellow-600 font-bold">Confirmed</span><span
+                                            id="rep-evt-conf">0</span></div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                        <div id="bar-evt-conf" class="bg-yellow-500 h-1.5 rounded-full"
+                                            style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                            <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                <i data-lucide="trending-up" class="w-4 h-4 text-orange-500"></i> Top Selling Items
+                            </h4>
+                            <div id="popular-products-list" class="space-y-4">
+                                <p class="text-center text-slate-400 text-sm py-4">Loading data...</p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-orange-50 rounded-2xl p-6 border border-orange-100 flex flex-col justify-center text-center">
+                            <div
+                                class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-orange-600">
+                                <i data-lucide="pie-chart" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-orange-900 mb-2">Business Insight</h3>
+                            <p class="text-orange-800/70 text-sm max-w-xs mx-auto">
+                                Your monthly revenue goal is 30% complete. Focus on promoting "Varan Batti" this weekend
+                                to boost sales.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+        </main>
+    </div>
+    <div id="invoice-modal"
+        class="fixed inset-0 z-[200] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col max-h-[90vh]">
+
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="text-xl font-bold text-gray-800">Order Invoice</h3>
+                <div class="flex gap-3">
+                    <button onclick="printInvoice()"
+                        class="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition font-bold text-sm">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Print
+                    </button>
+                    <button onclick="closeInvoiceModal()" class="p-2 hover:bg-gray-200 rounded-full transition">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="printable-invoice" class="p-8 overflow-y-auto bg-white">
+                <div class="flex justify-between items-start mb-8 border-b border-gray-100 pb-8">
+                    <div>
+                        <h1 class="text-3xl font-black text-orange-600 mb-2 brand-font">HOT FOOD.</h1>
+                        <p class="text-gray-500 text-sm">Traditional Maharashtrian & Sweets</p>
+                        <p class="text-gray-500 text-sm">Pune, Maharashtra</p>
+                        <p class="text-gray-500 text-sm">Phone: +91 9876543210</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Invoice Details</p>
+                        <div class="text-2xl font-mono font-bold text-gray-800 mb-1" id="inv-id">#ORD-0000</div>
+                        <p class="text-sm text-gray-600" id="inv-date">Date: 12 Oct 2024</p>
+                        <div class="mt-2 inline-block px-3 py-1 rounded-md text-xs font-bold uppercase" id="inv-status">
+                            PAID</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-6 mb-8 border border-gray-100">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Bill To</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1" id="inv-name">Customer Name</h3>
+                    <p class="text-gray-600 text-sm mb-1"><i data-lucide="phone" class="w-3 h-3 inline mr-2"></i><span
+                            id="inv-phone">9999999999</span></p>
+                    <p class="text-gray-600 text-sm"><i data-lucide="map-pin" class="w-3 h-3 inline mr-2"></i><span
+                            id="inv-address">Address Line 1, City</span></p>
+                </div>
+
+                <table class="w-full mb-8">
+                    <thead>
+                        <tr class="border-b-2 border-gray-100 text-left">
+                            <th class="py-3 text-xs font-bold text-gray-400 uppercase tracking-wider w-1/2">Item
+                                Description</th>
+                            <th class="py-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Qty
+                            </th>
+                            <th class="py-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Price
+                            </th>
+                            <th class="py-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Total
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="inv-items" class="divide-y divide-gray-50 text-sm text-gray-600">
+                    </tbody>
+                </table>
+
+                <div class="flex justify-end">
+                    <div class="w-64 space-y-3">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Subtotal</span>
+                            <span class="font-medium" id="inv-subtotal">₹0.00</span>
+                        </div>
+                        <div id="inv-delivery-row" class="flex justify-between text-sm text-gray-600">
+                            <span>Delivery Fee</span>
+                            <span class="font-medium">₹30.00</span>
+                        </div>
+                        <div
+                            class="flex justify-between text-lg font-black text-gray-900 border-t-2 border-gray-100 pt-3 mt-3">
+                            <span>Grand Total</span>
+                            <span class="text-orange-600" id="inv-total">₹0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-gray-100 text-center text-xs text-gray-400">
+                    <p>Thank you for ordering from HOT FOOD!</p>
+                    <p class="mt-1">For support, please contact support@hotfood.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #invoice-modal,
+            #printable-invoice,
+            #printable-invoice * {
+                visibility: visible;
+            }
+
+            #invoice-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+                padding: 0;
+            }
+
+            #printable-invoice {
+                padding: 20px;
+            }
+
+            /* Hide buttons in print */
+            button {
+                display: none !important;
+            }
+        }
+    </style>
+    <div id="otp-modal"
+        class="fixed inset-0 z-[200] hidden bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300">
+        <div
+            class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden relative transform transition-all scale-100">
+
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-100 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-red-100 rounded-full blur-2xl"></div>
+
+            <div class="relative p-8 text-center">
+                <button onclick="closeOtpModal()"
+                    class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+
+                <div
+                    class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </div>
+
+                <h3 class="text-2xl font-black brand-font text-slate-800 mb-1">Verify Delivery</h3>
+                <p class="text-slate-500 text-sm mb-6">Ask customer for the 4-digit PIN</p>
+
+                <div class="flex justify-center gap-3 mb-8" id="otp-inputs">
+                    <input type="text" maxlength="1"
+                        class="otp-box w-12 h-14 border-2 border-slate-200 rounded-xl text-center text-2xl font-bold text-slate-700 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
+                        data-index="0">
+                    <input type="text" maxlength="1"
+                        class="otp-box w-12 h-14 border-2 border-slate-200 rounded-xl text-center text-2xl font-bold text-slate-700 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
+                        data-index="1">
+                    <input type="text" maxlength="1"
+                        class="otp-box w-12 h-14 border-2 border-slate-200 rounded-xl text-center text-2xl font-bold text-slate-700 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
+                        data-index="2">
+                    <input type="text" maxlength="1"
+                        class="otp-box w-12 h-14 border-2 border-slate-200 rounded-xl text-center text-2xl font-bold text-slate-700 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
+                        data-index="3">
+                </div>
+
+                <button onclick="submitOtpVerification()"
+                    class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group">
+                    <span>Complete Order</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+
+            <div id="otp-loading"
+                class="absolute inset-0 bg-white/80 backdrop-blur-sm hidden flex items-center justify-center">
+                <i data-lucide="loader-2" class="w-10 h-10 animate-spin text-orange-600"></i>
+            </div>
+        </div>
+    </div>
+    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
+        preload="auto"></audio>
+    <div id="toast"
+        class="fixed bottom-6 right-6 z-[110] hidden transform transition-all duration-300 translate-y-20 opacity-0">
+        <div class="bg-slate-800 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 min-w-[300px]">
+            <div id="toast-icon"></div>
+            <p id="toast-message" class="font-medium flex-1 text-sm"></p>
+            <button onclick="hideToast()" class="text-slate-400 hover:text-white"><i data-lucide="x"
+                    class="w-4 h-4"></i></button>
+        </div>
+    </div>
+    <div id="customer-modal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-orange-50">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-orange-200 flex items-center justify-center text-orange-700 font-bold text-xl"
+                        id="cust-modal-avatar">
+                        U
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 brand-font" id="cust-modal-name">User Name</h3>
+                        <p class="text-xs text-gray-500 font-mono" id="cust-modal-id">ID: #12345</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('customer-modal').classList.add('hidden')"
+                    class="p-2 hover:bg-white rounded-full transition text-gray-500">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="flex flex-col md:flex-row h-full overflow-hidden">
+
+                <div class="w-full md:w-1/3 bg-gray-50 p-6 border-r border-gray-100 overflow-y-auto">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Personal Details</h4>
+
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Email</p>
+                            <p class="text-sm font-medium text-gray-800 break-all" id="cust-modal-email">-</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Phone</p>
+                            <p class="text-sm font-medium text-gray-800" id="cust-modal-phone">-</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Address</p>
+                            <p class="text-sm font-medium text-gray-800" id="cust-modal-address">-</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Account Created</p>
+                            <p class="text-sm font-medium text-gray-800" id="cust-modal-join">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-2/3 p-6 overflow-y-auto">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Order History</h4>
+
+                    <div class="overflow-x-auto rounded-xl border border-gray-100">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase">
+                                <tr>
+                                    <th class="p-3">Order ID</th>
+                                    <th class="p-3">Date</th>
+                                    <th class="p-3">Items</th>
+                                    <th class="p-3">Amount</th>
+                                    <th class="p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cust-modal-orders" class="text-sm text-gray-600">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="cust-no-orders" class="hidden text-center py-10">
+                        <div
+                            class="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 text-gray-400">
+                            <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+                        </div>
+                        <p class="text-gray-500 font-medium">No orders found for this user.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* =========================================
+           GLOBAL CONFIGURATION & STATE
+           ========================================= */
+        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:3000/api'
+            : '/api';
+        let adminToken = null;
+        let eventsData = []; // Store fetched events locally for filtering
+        let usersData = [];
+        let toastTimeout = null;
+
+        /* =========================================
+           INITIALIZATION
+           ========================================= */
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            checkAdminAuth();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Login Form
+            document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await handleLogin();
+            });
+
+            // Register Form
+            document.getElementById('admin-register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await handleRegister();
+            });
+        }
+
+        /* =========================================
+           AUTHENTICATION LOGIC
+           ========================================= */
+        async function checkAdminAuth() {
+            const token = localStorage.getItem('adminToken');
+            const user = localStorage.getItem('adminUser');
+
+            if (token && user) {
+                // 🚀 Step 1: Optimistic UI (Turant Layout Dikhao)
+                // Server ka wait mat karo, user ko dashboard dikha do
+                adminToken = token;
+                const userData = JSON.parse(user);
+
+                updateUserUI(userData);
+                showLayout(); // UI Visible (LCP Triggered Here ⚡)
+
+                // Step 2: Load Data
+                loadDashboard();
+                startLiveUpdates();
+
+                // 🚀 Step 3: Verify Token in Background (Chupke se check karo)
+                try {
+                    const response = await fetch(`${API_BASE}/auth/verify-admin`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    // Agar Server bole token galat hai, tabhi logout karo
+                    if (!response.ok) {
+                        throw new Error('Token invalid');
+                    }
+                } catch (error) {
+                    console.warn('Background auth check failed:', error);
+                    adminLogout(); // Invalid token par logout
+                }
+            } else {
+                showAuthOverlay();
+            }
+        }
+        // ==========================================
+        // 🔴 LIVE NOTIFICATION SYSTEM
+        // ==========================================
+
+        let lastOrderCount = 0;
+        let lastEventCount = 0;
+        let isFirstLoad = true;
+
+        // 1. System Start karein
+        function startLiveUpdates() {
+            // Har 5 second mein check karega
+            setInterval(() => {
+                checkForUpdates();
+            }, 5000);
+        }
+
+        // 2. Check Logic
+        async function checkForUpdates() {
+            if (!adminToken) return; // Agar login nahi hai to mat chalao
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/dashboard-stats`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (response.ok) {
+                    const stats = await response.json();
+                    const currentOrders = stats.totalOrders || 0;
+                    const currentEvents = stats.totalEvents || 0;
+
+                    // Pehli baar load hone par bas count save karo (Awaz mat karo)
+                    if (isFirstLoad) {
+                        lastOrderCount = currentOrders;
+                        lastEventCount = currentEvents;
+                        isFirstLoad = false;
+                        return;
+                    }
+
+                    // 🔔 NEW ORDER DETECTED
+                    if (currentOrders > lastOrderCount) {
+                        playNotificationSound();
+                        showToast(`🔔 New Order Received!`, 'success');
+
+                        // Data Refresh karein
+                        lastOrderCount = currentOrders;
+                        loadDashboard(); // Counters update
+                        loadAdminOrders(); // Table update
+                    }
+
+                    // 📅 NEW EVENT DETECTED
+                    if (currentEvents > lastEventCount) {
+                        playNotificationSound();
+                        showToast(`📅 New Event Booking!`, 'success');
+
+                        // Data Refresh karein
+                        lastEventCount = currentEvents;
+                        loadDashboard(); // Counters update
+                        loadEvents(); // Table update
+                    }
+                }
+            } catch (error) {
+                console.error("Live update error:", error);
+            }
+        }
+
+        // 3. Sound Player
+        function playNotificationSound() {
+            const audio = document.getElementById('notification-sound');
+            if (audio) {
+                audio.currentTime = 0; // Reset sound
+                audio.play().catch(e => console.log("Audio play blocked until user interaction"));
+            }
+        }
+        async function handleLogin() {
+            const email = document.getElementById('admin-email-input').value;
+            const password = document.getElementById('admin-password-input').value;
+            const errorEl = document.getElementById('auth-error');
+            const errorMsg = document.getElementById('auth-error-msg');
+
+            errorEl.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/admin-login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('adminToken', data.token);
+                    localStorage.setItem('adminUser', JSON.stringify(data.user));
+                    adminToken = data.token;
+
+                    updateUserUI(data.user);
+                    showLayout();
+                    loadDashboard();
+                    const adminName = data.user.name || 'Admin';
+                    showToast(`Welcome back, ${adminName}!`, 'success');
+                } else {
+                    throw new Error(data.message || 'Login failed');
+                }
+            } catch (error) {
+                errorMsg.textContent = error.message;
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        async function handleRegister() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm-password').value;
+            const errorEl = document.getElementById('auth-error');
+            const successEl = document.getElementById('auth-success');
+
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+
+            if (password !== confirm) {
+                document.getElementById('auth-error-msg').textContent = "Passwords do not match";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/admin-register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('auth-success-msg').textContent = "Registration successful! Please login.";
+                    successEl.classList.remove('hidden');
+                    setTimeout(() => showLoginForm(), 2000);
+                } else {
+                    throw new Error(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                document.getElementById('auth-error-msg').textContent = error.message;
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        function adminLogout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            adminToken = null;
+            showAuthOverlay();
+            showToast('Logged out successfully');
+        }
+
+        /* =========================================
+           UI NAVIGATION & LAYOUT
+           ========================================= */
+        function showLayout() {
+            document.getElementById('auth-overlay').classList.add('hidden');
+            document.getElementById('admin-layout').classList.remove('hidden');
+        }
+
+        function showAuthOverlay() {
+            document.getElementById('admin-layout').classList.add('hidden');
+            document.getElementById('auth-overlay').classList.remove('hidden');
+            showLoginForm();
+        }
+
+        function showRegisterForm() {
+            document.getElementById('admin-login-form').classList.add('hidden');
+            document.getElementById('admin-register-form').classList.remove('hidden');
+        }
+
+        function showLoginForm() {
+            document.getElementById('admin-register-form').classList.add('hidden');
+            document.getElementById('admin-login-form').classList.remove('hidden');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
+
+            // Toggle class for translate
+            if (sidebar.classList.contains('-translate-x-full')) {
+                // Open
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                // Close
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        function switchView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.admin-view').forEach(el => el.classList.add('hidden'));
+
+            // Show selected view
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+
+            // Update Nav Active State
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-orange-50', 'text-orange-700', 'active-nav');
+            });
+            document.getElementById(`nav-${viewName}`).classList.add('bg-orange-50', 'text-orange-700', 'active-nav');
+
+            // Update Header Titles
+            const titles = {
+                'dashboard': ['Dashboard', 'Overview & Statistics'],
+                'events': ['Event Bookings', 'Manage Catering Requests'],
+                'orders': ['Order Management', 'Online Food Orders'],
+                'customers': ['Customers', 'Registered Users'],
+                'reports': ['Reports', 'Analytics & Financials']
+            };
+
+            document.getElementById('page-title').textContent = titles[viewName][0];
+            document.getElementById('page-subtitle').textContent = titles[viewName][1];
+
+            // Close sidebar on mobile after selection
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
+                toggleSidebar();
+            }
+
+            // Load specific data if needed
+            if (viewName === 'events') loadEvents();
+            if (viewName === 'dashboard') loadDashboard();
+            if (viewName === 'customers') loadCustomers();
+            if (viewName === 'orders') loadAdminOrders();
+            if (viewName === 'reports') loadReports();
+        }
+
+        function updateUserUI(user) {
+            if (!user) return;
+
+            // 1. Sidebar update (Existing)
+            const nameEl = document.getElementById('admin-name');
+            const emailEl = document.getElementById('admin-email');
+
+            if (nameEl) nameEl.textContent = user.name || 'Admin';
+            if (emailEl) emailEl.textContent = user.email || 'admin@hotfood.com';
+
+            // 2. Dashboard Welcome Message Update (NEW)
+            const welcomeEl = document.getElementById('dashboard-welcome');
+            if (welcomeEl) {
+                welcomeEl.textContent = `Welcome back, ${user.name || 'Admin'}!`;
+            }
+        }
+
+        /* =========================================
+           DATA LOADING & RENDERING
+           ========================================= */
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/dashboard-stats`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (response.ok) {
+                    const stats = await response.json();
+
+                    // Animate Numbers
+                    animateValue("total-revenue", stats.totalRevenue || 0, true);
+                    animateValue("total-events", stats.totalEvents || 0);
+                    animateValue("pending-events", stats.pendingEvents || 0);
+                    document.getElementById('total-customers').textContent = stats.customers || 0;
+
+                    // 👇 NEW: Revenue Card mein Breakdown Show Karein
+                    const revenueCard = document.getElementById('total-revenue').parentElement;
+
+                    // Check karein agar purana breakdown element hai toh hata dein
+                    const oldBreakdown = document.getElementById('rev-breakdown');
+                    if (oldBreakdown) oldBreakdown.remove();
+
+                    if (stats.revenueBreakdown) {
+                        const breakdownHtml = `
+                    <div id="rev-breakdown" class="mt-3 pt-3 border-t border-slate-100 flex justify-between text-xs font-medium">
+                        <span class="text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Orders: ₹${stats.revenueBreakdown.orders.toLocaleString()}</span>
+                        <span class="text-orange-600 bg-orange-50 px-2 py-1 rounded-md">Events: ₹${stats.revenueBreakdown.events.toLocaleString()}</span>
+                    </div>
+                `;
+                        revenueCard.insertAdjacentHTML('beforeend', breakdownHtml);
+                    }
+
+                    // Update Badge in Sidebar
+                    const pendingCount = stats.pendingEvents || 0;
+                    const badge = document.getElementById('badge-events');
+                    if (pendingCount > 0) {
+                        badge.textContent = pendingCount;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Fetch stats failed', error);
+            }
+        }
+
+        async function loadEvents() {
+            const tbody = document.getElementById('events-table-body');
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/events`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (response.ok) {
+                    eventsData = await response.json(); // Store globally
+                    renderEventsTable(eventsData);
+                } else {
+                    throw new Error('Failed to fetch events');
+                }
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Failed to load data. Please refresh.</td></tr>`;
+            }
+        }
+        async function loadReports(period = 'month') {
+            // Show Loading State if needed
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/reports?period=${period}`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // 1. Update Revenue
+                    document.getElementById('rep-revenue').textContent = `₹${data.totalRevenue.toLocaleString()}`;
+
+                    // Calculate Orders vs Events Revenue (Backend se alag fields chahiye ya estimate lagayein)
+                    // Note: Server update ke baad 'revenueBreakdown' available hoga
+                    const orderRev = data.revenueBreakdown ? data.revenueBreakdown.orders : 0;
+                    const eventRev = data.revenueBreakdown ? data.revenueBreakdown.events : 0;
+
+                    document.getElementById('rep-rev-orders').textContent = `₹${orderRev.toLocaleString()}`;
+                    document.getElementById('rep-rev-events').textContent = `₹${eventRev.toLocaleString()}`;
+
+                    // 2. Update Order Stats
+                    const oStats = data.orderStats;
+                    document.getElementById('rep-orders-total').textContent = oStats.total;
+                    document.getElementById('rep-ord-del').textContent = oStats.delivered;
+                    document.getElementById('rep-ord-pen').textContent = oStats.pending;
+
+                    // Progress Bars Width Calculation
+                    const delPercent = oStats.total > 0 ? (oStats.delivered / oStats.total) * 100 : 0;
+                    const penPercent = oStats.total > 0 ? (oStats.pending / oStats.total) * 100 : 0;
+                    document.getElementById('bar-ord-del').style.width = `${delPercent}%`;
+                    document.getElementById('bar-ord-pen').style.width = `${penPercent}%`;
+
+                    // 3. Update Event Stats
+                    const eStats = data.eventStats;
+                    document.getElementById('rep-events-total').textContent = eStats.total;
+                    document.getElementById('rep-evt-comp').textContent = eStats.completed;
+                    document.getElementById('rep-evt-conf').textContent = eStats.confirmed;
+
+                    const compPercent = eStats.total > 0 ? (eStats.completed / eStats.total) * 100 : 0;
+                    const confPercent = eStats.total > 0 ? (eStats.confirmed / eStats.total) * 100 : 0;
+                    document.getElementById('bar-evt-comp').style.width = `${compPercent}%`;
+                    document.getElementById('bar-evt-conf').style.width = `${confPercent}%`;
+
+                    // 4. Popular Products
+                    const popList = document.getElementById('popular-products-list');
+                    if (data.popularProducts.length > 0) {
+                        popList.innerHTML = data.popularProducts.map((item, index) => {
+                            // Name formatting
+                            const name = item.productId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                            return `
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-slate-400 text-sm">#${index + 1}</span>
+                                <span class="font-bold text-slate-700">${name}</span>
+                            </div>
+                            <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-lg">${item.count} Sold</span>
+                        </div>
+                    `;
+                        }).join('');
+                    } else {
+                        popList.innerHTML = `<p class="text-center text-slate-400 text-sm">No sales data yet.</p>`;
+                    }
+
+                }
+            } catch (error) {
+                console.error("Report Error:", error);
+            }
+        }
+        function renderEventsTable(events) {
+            const tbody = document.getElementById('events-table-body');
+
+            if (!events || events.length === 0) {
+                tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-16 text-center text-slate-400">
+                        <i data-lucide="calendar-off" class="w-12 h-12 mx-auto mb-3 opacity-50"></i>
+                        <p>No booking records found.</p>
+                    </td>
+                </tr>`;
+                lucide.createIcons();
+                return;
+            }
+
+            // XSS Protection Helper
+            function escapeHtml(text) {
+                if (!text) return '';
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            tbody.innerHTML = events.map(event => `
+            <tr class="hover:bg-slate-50 border-b border-slate-100 transition group">
+                <td class="px-6 py-4">
+                    <div class="font-bold text-slate-800">${escapeHtml(event.customerName)}</div>
+                    <div class="text-xs text-slate-500">${escapeHtml(event.customerPhone)}</div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-sm font-medium text-slate-800">${new Date(event.eventDate).toLocaleDateString()}</div>
+                    <div class="text-xs text-slate-500">${escapeHtml(event.eventType)} • ${event.guests} Guests</div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-xs text-slate-600 max-w-[200px] truncate" title="${event.foodItems.map(i => escapeHtml(i.itemName)).join(', ')}">
+                        ${event.foodItems.slice(0, 2).map(i => escapeHtml(i.itemName)).join(', ')}
+                        ${event.foodItems.length > 2 ? `+${event.foodItems.length - 2} more` : ''}
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="font-bold text-slate-800">₹${event.totalAmount.toLocaleString()}</div>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="status-badge status-${event.status}">
+                        ${event.status.toUpperCase()}
+                    </span>
+                </td>
+               <td class="px-6 py-4 text-right">
+    <div class="flex items-center justify-end gap-2 opacity-100 transition"> <button onclick="openEventInvoice('${event._id}')" class="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition" title="View Bill">
+            <i data-lucide="receipt" class="w-4 h-4"></i>
+        </button>
+
+
+        ${event.status === 'pending' ? `
+            <button onclick="updateStatus('${event._id}', 'confirmed')" class="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition" title="Confirm">
+                <i data-lucide="check" class="w-4 h-4"></i>
+            </button>
+            <button onclick="updateStatus('${event._id}', 'cancelled')" class="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition" title="Cancel">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        ` : ''}
+        ${event.status === 'confirmed' ? `
+             <button onclick="updateStatus('${event._id}', 'completed')" class="p-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition" title="Mark Completed">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            </button>
+        `: ''}
+    </div>
+</td>
+            </tr>
+        `).join('');
+
+            lucide.createIcons();
+        }
+        function openEventInvoice(eventId) {
+            // Global eventsData variable se event dhoondhein
+            const event = eventsData.find(e => e._id === eventId);
+            if (!event) return;
+
+            // 1. Header Details
+            document.getElementById('inv-id').textContent = `#EVT-${event._id.slice(-6).toUpperCase()}`;
+            document.getElementById('inv-date').textContent = new Date(event.eventDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Status Badge
+            const statusEl = document.getElementById('inv-status');
+            statusEl.textContent = event.status.toUpperCase();
+            statusEl.className = `mt-2 inline-block px-3 py-1 rounded-md text-xs font-bold uppercase status-${event.status}`;
+
+            // 2. Customer Details
+            document.getElementById('inv-name').textContent = event.customerName;
+            document.getElementById('inv-phone').textContent = event.customerPhone;
+            document.getElementById('inv-address').textContent = event.eventAddress;
+
+            // 3. Items List
+            const itemsContainer = document.getElementById('inv-items');
+            let subtotal = 0;
+
+            itemsContainer.innerHTML = event.foodItems.map(item => {
+                const itemTotal = (item.price || 0) * (item.quantity || 0);
+                subtotal += itemTotal;
+
+                return `
+            <tr class="border-b border-dashed border-gray-100">
+                <td class="py-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded bg-orange-50 flex items-center justify-center text-orange-500">
+                            <i data-lucide="utensils" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium text-gray-800">${item.itemName}</span>
+                    </div>
+                </td>
+                <td class="py-3 text-center align-middle">${item.quantity}</td>
+                <td class="py-3 text-right align-middle">₹${item.price}</td>
+                <td class="py-3 text-right font-bold align-middle">₹${itemTotal}</td>
+            </tr>
+        `;
+            }).join('');
+
+            // --- FIX: DELIVERY FEE HIDE LOGIC ---
+            // Delivery Row ko chupao
+            document.getElementById('inv-delivery-row').classList.add('hidden');
+
+            // Totals Calculation (Sirf Subtotal = Total)
+            document.getElementById('inv-subtotal').textContent = `₹${subtotal}`;
+            document.getElementById('inv-total').textContent = `₹${event.totalAmount}`;
+
+            // Modal Show
+            document.getElementById('invoice-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+        async function loadAdminOrders() {
+            const tbody = document.getElementById('orders-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-orange-500"></i></td></tr>`;
+
+            // XSS Protection Helper
+            function escapeHtml(text) {
+                if (!text) return '';
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/orders`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (response.ok) {
+                    ordersData = await response.json(); // Data ko global variable mein save kiya
+
+                    if (ordersData.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No orders found.</td></tr>`;
+                        return;
+                    }
+
+                    tbody.innerHTML = ordersData.map(order => {
+                        const firstItem = (order.items && order.items.length > 0) ? order.items[0] : { name: 'Unknown', image: '', quantity: 0 };
+                        const itemCount = order.items ? order.items.length : 0;
+
+                        // --- Action Buttons Logic ---
+                        let actionButtons = `<div class="flex items-center gap-2">`;
+
+                        // 1. View Bill Button
+                        actionButtons += `
+                    <button onclick="openInvoiceModal('${order._id}')" class="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition" title="View Bill">
+                        <i data-lucide="receipt" class="w-4 h-4"></i>
+                    </button>`;
+
+                        // 2. Status Update Button
+                        if (order.status === 'pending') {
+                            actionButtons += `<button onclick="updateOrderStatus('${order._id}', 'confirmed')" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200">Confirm</button>`;
+                        } else if (order.status === 'confirmed') {
+                            actionButtons += `<button onclick="updateOrderStatus('${order._id}', 'packed')" class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold hover:bg-yellow-200">Pack</button>`;
+                        } else if (order.status === 'packed') {
+                            actionButtons += `<button onclick="updateOrderStatus('${order._id}', 'shipped')" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs font-bold hover:bg-purple-200">Ship</button>`;
+                        } else if (order.status === 'shipped') {
+                            actionButtons += `<button onclick="updateOrderStatus('${order._id}', 'out_for_delivery')" class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold hover:bg-orange-200">Deliver</button>`;
+                        } else if (order.status === 'out_for_delivery') {
+                            actionButtons += `<button onclick="verifyDelivery('${order._id}')" class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold hover:bg-green-200">OTP</button>`;
+                        }
+
+                        // 3. Cancel Button (Only if not Delivered or Cancelled)
+                        if (!['delivered', 'cancelled', 'out_for_delivery'].includes(order.status)) {
+                            actionButtons += `
+                        <button onclick="cancelAdminOrder('${order._id}')" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition" title="Cancel Order">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>`;
+                        }
+
+                        actionButtons += `</div>`;
+
+                        return `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="px-6 py-4">
+                        <div class="font-mono text-xs text-slate-500 mb-1">#${order._id.slice(-6).toUpperCase()}</div>
+                        <div class="font-bold text-slate-800">${escapeHtml(order.customerName)}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-xs text-slate-600">
+                            <span class="font-bold">${itemCount} Items</span>
+                            <span class="text-slate-500 truncate block w-32">${escapeHtml(firstItem.name)}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                         ${order.items ? order.items.map(i => `<div class="text-xs text-gray-500">${i.quantity}x ${escapeHtml(i.name)}</div>`).join('') : ''}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="font-bold text-orange-600">₹${order.total}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 rounded text-xs font-bold uppercase ${getStatusColor(order.status)}">
+                            ${order.status.replace(/_/g, ' ')}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        ${actionButtons}
+                    </td>
+                </tr>
+            `}).join('');
+
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+        // --- CANCEL ORDER FUNCTION ---
+        async function cancelAdminOrder(id) {
+            if (!confirm("Are you sure you want to CANCEL this order? This cannot be undone.")) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/orders/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ status: 'cancelled' })
+                });
+
+                if (response.ok) {
+                    showToast('Order cancelled successfully', 'success');
+                    loadAdminOrders();
+                } else {
+                    showToast('Failed to cancel order', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Network error', 'error');
+            }
+        }
+
+        async function openInvoiceModal(orderId) {
+            // 0. Load Products for Image Lookup if not already loaded
+            if (!window.productsLookup) {
+                try {
+                    const res = await fetch(`${API_BASE}/products`);
+                    const products = await res.json();
+                    window.productsLookup = {};
+                    products.forEach(p => { window.productsLookup[p._id] = p; });
+                } catch (e) { console.error("Failed to load products for invoice images", e); }
+            }
+
+            // Global ordersData mein se order dhundho
+            const order = ordersData.find(o => o._id === orderId);
+            if (!order) return;
+
+            // Data Fill Karein
+            document.getElementById('inv-id').textContent = `#${order._id.slice(-6).toUpperCase()}`;
+            document.getElementById('inv-date').textContent = new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Status Badge Logic
+            const statusEl = document.getElementById('inv-status');
+            statusEl.textContent = order.status.toUpperCase();
+            // Reset classes and add new ones
+            statusEl.className = `mt-2 inline-block px-3 py-1 rounded-md text-xs font-bold uppercase ${getStatusColor(order.status)}`;
+
+            document.getElementById('inv-name').textContent = order.customerName;
+            document.getElementById('inv-phone').textContent = order.customerPhone;
+            document.getElementById('inv-address').textContent = order.deliveryAddress;
+
+            // Items List Fill Karein (WITH IMAGE)
+            const itemsContainer = document.getElementById('inv-items');
+            let subtotal = 0;
+
+            itemsContainer.innerHTML = order.items.map(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                // Image Fallback Logic - Prefer Product Lookup
+                let imgUrl = item.image || 'https://via.placeholder.com/40';
+                if (window.productsLookup && window.productsLookup[item.productId] && window.productsLookup[item.productId].image) {
+                    imgUrl = window.productsLookup[item.productId].image;
+                }
+
+
+                return `
+            <tr class="border-b border-dashed border-gray-100">
+                <td class="py-3">
+                    <div class="flex items-center gap-3">
+                        <img src="${imgUrl}" class="w-12 h-12 rounded-lg object-cover border border-gray-200" alt="Item">
+                        <span class="font-medium text-gray-800">${item.name}</span>
+                    </div>
+                </td>
+                <td class="py-3 text-center align-middle">${item.quantity}</td>
+                <td class="py-3 text-right align-middle">₹${item.price}</td>
+                <td class="py-3 text-right font-bold align-middle">₹${itemTotal}</td>
+            </tr>
+        `;
+            }).join('');
+
+            // Totals Calculation
+            document.getElementById('inv-subtotal').textContent = `₹${subtotal}`;
+            document.getElementById('inv-total').textContent = `₹${order.total}`;
+
+            // Modal Show
+            document.getElementById('invoice-modal').classList.remove('hidden');
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal').classList.add('hidden');
+        }
+
+        function printInvoice() {
+            window.print();
+        }
+
+        // Add this function to admin.html script to handle OTP verification
+        async function verifyDelivery(id) {
+            const otp = prompt("Enter Customer OTP (4-digits):");
+            if (!otp) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/orders/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ status: 'delivered', otp: otp })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    showToast('Order Delivered Successfully!', 'success');
+                    loadAdminOrders();
+                } else {
+                    alert(data.message || 'Incorrect OTP');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        // Global variable to store current order ID
+        let currentOtpOrderId = null;
+
+        // 1. Open Modal Function (Replaces old verifyDelivery)
+        function verifyDelivery(orderId) {
+            currentOtpOrderId = orderId;
+
+            // Clear inputs
+            const inputs = document.querySelectorAll('.otp-box');
+            inputs.forEach(input => input.value = '');
+
+            // Show Modal
+            const modal = document.getElementById('otp-modal');
+            modal.classList.remove('hidden');
+
+            // Focus first input
+            setTimeout(() => inputs[0].focus(), 100);
+        }
+
+        // 2. Close Modal Function
+        function closeOtpModal() {
+            document.getElementById('otp-modal').classList.add('hidden');
+            currentOtpOrderId = null;
+        }
+
+        // 3. Handle Auto-Focus Logic (The Innovative Part)
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.otp-box');
+
+            inputs.forEach((input, index) => {
+                // Handle Typing
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus(); // Move to next
+                        }
+                    }
+                });
+
+                // Handle Backspace
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value) {
+                        if (index > 0) {
+                            inputs[index - 1].focus(); // Move to previous
+                        }
+                    }
+                    // Allow Enter key to submit
+                    if (e.key === 'Enter' && index === 3) {
+                        submitOtpVerification();
+                    }
+                });
+
+                // Prevent non-numeric input
+                input.addEventListener('keypress', (e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+
+        // 4. Submit OTP to Backend
+        async function submitOtpVerification() {
+            if (!currentOtpOrderId) return;
+
+            // Combine values from 4 boxes
+            let otp = '';
+            document.querySelectorAll('.otp-box').forEach(input => otp += input.value);
+
+            if (otp.length !== 4) {
+                showToast('Please enter complete 4-digit PIN', 'error');
+                // Shake animation effect
+                const container = document.getElementById('otp-inputs');
+                container.classList.add('animate-pulse', 'border-red-500');
+                setTimeout(() => container.classList.remove('animate-pulse'), 500);
+                return;
+            }
+
+            // Show loading
+            document.getElementById('otp-loading').classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/orders/${currentOtpOrderId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ status: 'delivered', otp: otp })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    closeOtpModal();
+                    showToast('✅ Order Verified & Delivered!', 'success');
+
+                    // Play success sound (Optional)
+                    // new Audio('success.mp3').play(); 
+
+                    loadAdminOrders(); // Refresh table
+                } else {
+                    showToast(data.message || 'Incorrect OTP', 'error');
+                    // Clear inputs on error
+                    document.querySelectorAll('.otp-box').forEach(i => i.value = '');
+                    document.querySelectorAll('.otp-box')[0].focus();
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Network Error', 'error');
+            } finally {
+                document.getElementById('otp-loading').classList.add('hidden');
+            }
+        }
+        let ordersData = [];
+        async function handleStatusChange(id, newStatus) {
+            let otp = null;
+
+            // If status is Delivered, Ask for OTP
+            if (newStatus === 'delivered') {
+                otp = prompt("Please enter the 4-digit OTP provided by the customer:");
+                if (!otp) {
+                    showToast("OTP is required to mark as Delivered", "error");
+                    loadAdminOrders(); // Reset dropdown
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/orders/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ status: newStatus, otp: otp })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(`Order updated to ${newStatus}`, 'success');
+                    loadAdminOrders();
+                } else {
+                    showToast(data.message || 'Update failed', 'error');
+                    loadAdminOrders(); // Reset dropdown on failure
+                }
+            } catch (error) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        function getStatusColor(status) {
+            if (status === 'pending') return 'text-yellow-600 bg-yellow-50';
+            if (status === 'confirmed') return 'text-blue-600 bg-blue-50';
+            if (status === 'packed') return 'text-purple-600 bg-purple-50'; // New
+            if (status === 'shipped') return 'text-indigo-600 bg-indigo-50'; // New
+            if (status === 'out_for_delivery') return 'text-orange-600 bg-orange-50';
+            if (status === 'delivered') return 'text-green-600 bg-green-50';
+            if (status === 'cancelled') return 'text-red-600 bg-red-50';
+            return 'text-gray-600 bg-gray-50';
+        }
+        async function updateOrderStatus(id, status) {
+            try {
+                await fetch(`${API_BASE}/admin/orders/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ status })
+                });
+                showToast('Order status updated', 'success');
+                loadAdminOrders();
+            } catch (error) {
+                showToast('Failed to update status', 'error');
+            }
+        }
+
+
+        async function updateStatus(id, status) {
+            try {
+                const response = await fetch(`${API_BASE}/admin/events/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ status })
+                });
+
+                if (response.ok) {
+                    showToast(`Booking marked as ${status}`, 'success');
+                    loadEvents(); // Reload table
+                    loadDashboard(); // Reload stats
+                } else {
+                    showToast('Failed to update status', 'error');
+                }
+            } catch (error) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        function filterEvents(status) {
+            if (status === 'all') {
+                renderEventsTable(eventsData);
+            } else {
+                const filtered = eventsData.filter(e => e.status === status);
+                renderEventsTable(filtered);
+            }
+        }
+
+        /* =========================================
+           UTILITIES
+           ========================================= */
+        function refreshData() {
+            const currentView = document.querySelector('.admin-view:not(.hidden)').id.replace('view-', '');
+            if (currentView === 'dashboard') loadDashboard();
+            if (currentView === 'events') loadEvents();
+            showToast('Data refreshed successfully');
+        }
+        async function loadCustomers() {
+            const tbody = document.getElementById('customers-table-body');
+
+            // XSS Protection Helper
+            function escapeHtml(text) {
+                if (!text) return '';
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/customers`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (response.ok) {
+                    const customers = await response.json();
+                    usersData = customers;
+
+                    document.getElementById('customer-count-badge').textContent = `${customers.length} Users`;
+                    document.getElementById('total-customers').textContent = customers.length;
+
+                    if (customers.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">No registered customers yet.</td></tr>`;
+                        return;
+                    }
+
+                    tbody.innerHTML = customers.map(u => {
+                        // Auth type badge add karein
+                        const authBadge = u.authType === 'google'
+                            ? `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">Google</span>`
+                            : `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-800">Email</span>`;
+
+                        const statusBadge = u.isBlocked
+                            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200">BLOCKED</span>`
+                            : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">ACTIVE</span>`;
+
+                        const blockBtn = u.isBlocked
+                            ? `<button onclick="toggleBlockUser('${u._id}', false)" class="text-green-600 hover:bg-green-50 p-2 rounded-lg transition" title="Unblock User"><i data-lucide="shield-check" class="w-4 h-4"></i></button>`
+                            : `<button onclick="toggleBlockUser('${u._id}', true)" class="text-red-600 hover:bg-red-50 p-2 rounded-lg transition" title="Block User"><i data-lucide="ban" class="w-4 h-4"></i></button>`;
+
+                        return `
+        <tr class="hover:bg-slate-50 border-b border-slate-100 transition">
+            <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold text-xs">
+                        ${escapeHtml(u.name).charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="font-medium text-gray-900 flex items-center">
+                            ${escapeHtml(u.name)}
+                            ${authBadge}
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            ${u.orderCount || 0} orders • ${u.eventCount || 0} events
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-4 text-gray-500">${escapeHtml(u.email)}</td>
+            <td class="px-6 py-4 text-gray-500 font-mono text-xs">${u.phone || '-'}</td>
+            
+            <td class="px-6 py-4">
+                <div class="font-bold text-slate-800">₹${(u.totalSpent || 0).toLocaleString()}</div>
+            </td>
+
+            <td class="px-6 py-4">
+                ${statusBadge}
+            </td>
+
+            <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                    <button onclick="viewCustomerHistory('${u._id}')" class="text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition" title="View Details">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                    ${blockBtn}
+                </div>
+            </td>
+        </tr>
+    `;
+                    }).join('');
+
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Error loading customers.</td></tr>`;
+            }
+        }
+
+        // 👇 NEW FUNCTION TO HANDLE BLOCKING
+        async function toggleBlockUser(userId, shouldBlock) {
+            const action = shouldBlock ? "BLOCK" : "UNBLOCK";
+            if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/customers/${userId}/block`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ isBlocked: shouldBlock })
+                });
+
+                if (response.ok) {
+                    showToast(`User ${shouldBlock ? 'Blocked' : 'Unblocked'} Successfully`, 'success');
+                    loadCustomers(); // List refresh karein
+                } else {
+                    showToast('Action Failed', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Network Error', 'error');
+            }
+        }
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+
+            // Reset styles
+            toast.className = `fixed bottom-6 right-6 z-[110] transform transition-all duration-300 flex items-center gap-4 px-6 py-4 rounded-xl shadow-2xl min-w-[300px] border translate-y-0 opacity-100`;
+
+            if (type === 'success') {
+                toast.classList.add('bg-white', 'text-slate-800', 'border-green-100');
+                iconEl.innerHTML = `<div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i data-lucide="check" class="w-5 h-5"></i></div>`;
+            } else {
+                toast.classList.add('bg-white', 'text-slate-800', 'border-red-100');
+                iconEl.innerHTML = `<div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600"><i data-lucide="alert-circle" class="w-5 h-5"></i></div>`;
+            }
+
+            msgEl.textContent = message;
+            lucide.createIcons();
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(hideToast, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+
+            // 1. Pehle "Visible" classes hatao
+            toast.classList.remove('translate-y-0', 'opacity-100');
+
+            // 2. Phir "Hidden" classes add karo
+            toast.classList.add('translate-y-20', 'opacity-0');
+
+            // 3. Animation ke baad poora gayab kar do taaki click na ho
+            setTimeout(() => {
+                // Sirf tabhi hidden karo agar toast abhi bhi band hai (kisi ne naya toast na khola ho)
+                if (toast.classList.contains('opacity-0')) {
+                    toast.classList.add('hidden');
+                }
+            }, 300);
+        }
+
+        function animateValue(id, end, isCurrency = false) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+
+            let startTimestamp = null;
+            const duration = 1000;
+            const start = 0;
+
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+
+                obj.innerHTML = isCurrency ? `₹${value.toLocaleString()}` : value;
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        // ==========================================
+        // 👤 VIEW CUSTOMER HISTORY LOGIC - FIXED VERSION
+        // ==========================================
+
+        async function viewCustomerHistory(userId) {
+            try {
+                // Show loading
+                const modal = document.getElementById('customer-modal');
+                modal.classList.remove('hidden');
+
+                // Loading state dikhayein
+                const ordersContainer = document.getElementById('cust-modal-orders');
+                ordersContainer.innerHTML = `
+            <tr>
+                <td colspan="5" class="p-8 text-center">
+                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-orange-500"></i>
+                    <p class="mt-2 text-sm text-gray-500">Loading user history...</p>
+                </td>
+            </tr>
+        `;
+
+                lucide.createIcons();
+
+                // 1. Server se Customer ki details aur history mangwalo
+                const response = await fetch(`${API_BASE}/admin/customers/${userId}`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (!response.ok) {
+                    // More detailed error handling
+                    const errorText = await response.text();
+                    console.error('API Error:', response.status, errorText);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Check if the response has success property
+                if (data.success === false) {
+                    throw new Error(data.message || 'Failed to fetch details');
+                }
+
+                const user = data.customer || data; // Handle both response formats
+                const orders = data.orders || [];
+                const events = data.events || [];
+
+                // 2. Personal Info Fill Karein
+                document.getElementById('cust-modal-name').textContent = user.name || 'No Name';
+                document.getElementById('cust-modal-email').textContent = user.email || 'No Email';
+                document.getElementById('cust-modal-phone').textContent = user.phone || 'Not Provided';
+                document.getElementById('cust-modal-address').textContent = user.address || 'Not Provided';
+                document.getElementById('cust-modal-id').textContent = `ID: #${user._id.slice(-6).toUpperCase()}`;
+
+                // Avatar - Google image ya initial
+                const avatarEl = document.getElementById('cust-modal-avatar');
+                if (user.image) {
+                    avatarEl.innerHTML = `<img src="${user.image}" class="w-full h-full object-cover rounded-full" alt="${user.name}">`;
+                    avatarEl.classList.remove('bg-orange-200', 'text-orange-700');
+                } else {
+                    avatarEl.innerHTML = user.name.charAt(0).toUpperCase();
+                    avatarEl.classList.add('bg-orange-200', 'text-orange-700');
+                }
+
+                const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown';
+                document.getElementById('cust-modal-join').textContent = `Joined: ${joinDate}`;
+
+                // 3. Orders List Fill Karein
+                const noOrdersMsg = document.getElementById('cust-no-orders');
+
+                if (orders.length === 0) {
+                    ordersContainer.innerHTML = '';
+                    noOrdersMsg.classList.remove('hidden');
+                } else {
+                    noOrdersMsg.classList.add('hidden');
+
+                    ordersContainer.innerHTML = orders.map(order => {
+                        const date = new Date(order.createdAt).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+
+                        // Items list banayein
+                        const itemsList = order.items && order.items.length > 0
+                            ? order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')
+                            : 'No items';
+
+                        // Status color decide karein
+                        let statusColor = 'bg-yellow-100 text-yellow-800';
+                        if (order.status === 'delivered') statusColor = 'bg-green-100 text-green-800';
+                        if (order.status === 'cancelled') statusColor = 'bg-red-100 text-red-800';
+                        if (order.status === 'confirmed') statusColor = 'bg-blue-100 text-blue-800';
+                        if (order.status === 'out_for_delivery') statusColor = 'bg-orange-100 text-orange-800';
+                        if (order.status === 'packed') statusColor = 'bg-purple-100 text-purple-800';
+                        if (order.status === 'shipped') statusColor = 'bg-indigo-100 text-indigo-800';
+
+                        // Display amount with delivery fee
+                        const displayTotal = order.total || 0;
+
+                        return `
+                    <tr class="border-b border-gray-50 hover:bg-orange-50/50 transition">
+                        <td class="p-4">
+                            <div class="font-mono text-xs font-bold">#${order._id.slice(-6).toUpperCase()}</div>
+                        </td>
+                        <td class="p-4 text-sm">${date}</td>
+                        <td class="p-4 text-xs max-w-[200px] truncate" title="${itemsList}">
+                            ${itemsList.length > 50 ? itemsList.substring(0, 50) + '...' : itemsList}
+                        </td>
+                        <td class="p-4">
+                            <div class="font-bold text-gray-800">₹${displayTotal}</div>
+                            ${order.deliveryFee ? `<div class="text-xs text-gray-500">+₹${order.deliveryFee} delivery</div>` : ''}
+                        </td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${statusColor}">
+                                ${order.status || 'pending'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+                    }).join('');
+                }
+
+            } catch (error) {
+                console.error('Customer history error:', error);
+
+                // Error message dikhayein
+                const ordersContainer = document.getElementById('cust-modal-orders');
+                ordersContainer.innerHTML = `
+            <tr>
+                <td colspan="5" class="p-8 text-center">
+                    <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600"></i>
+                    </div>
+                    <p class="text-red-600 font-medium">Failed to load history</p>
+                    <p class="text-sm text-gray-500 mt-1">${error.message}</p>
+                    <button onclick="viewCustomerHistory('${userId}')" 
+                        class="mt-3 px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-bold hover:bg-orange-200 transition">
+                        Retry
+                    </button>
+                </td>
+            </tr>
+        `;
+
+                lucide.createIcons();
+            }
+        }
+    </script>
+</body>
+
+</html>
