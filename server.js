@@ -195,6 +195,7 @@ const Product = mongoose.model('Product', productSchema);
 
 // Event Booking Schema
 const eventSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Link to User
     customerName: { type: String, required: true },
     customerEmail: { type: String, required: true },
     customerPhone: { type: String, required: true },
@@ -790,6 +791,18 @@ app.post('/api/events', async (req, res) => {
             foodItems
         } = req.body;
 
+        // 👇 OPTIONAL: TOKEN VERIFICATION TO LINK USER
+        let userId = null;
+        try {
+            const token = req.header('Authorization')?.replace('Bearer ', '');
+            if (token) {
+                const decoded = jwt.verify(token, JWT_SECRET);
+                userId = decoded.userId;
+            }
+        } catch (err) {
+            console.log("Event Booking: Guest checkout or invalid token");
+        }
+
         // Calculate total amount
         let totalAmount = 0;
         const itemDetails = [];
@@ -815,6 +828,7 @@ app.post('/api/events', async (req, res) => {
 
         // Create event
         const event = new Event({
+            user: userId, // 👈 Link to User (if available)
             customerName,
             customerEmail,
             customerPhone,
@@ -840,7 +854,13 @@ app.post('/api/events', async (req, res) => {
 });
 app.get('/api/events/my-events', authenticateUser, async (req, res) => {
     try {
-        const events = await Event.find({ customerEmail: req.user.email }).sort({ createdAt: -1 });
+        // 👇 UPDATED: Search by User ID OR Email
+        const events = await Event.find({
+            $or: [
+                { user: req.user._id },
+                { customerEmail: { $regex: new RegExp(`^${req.user.email}$`, 'i') } }
+            ]
+        }).sort({ createdAt: -1 });
         res.json(events);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

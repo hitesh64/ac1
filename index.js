@@ -947,9 +947,15 @@ async function handleEventBooking(event) {
         submitBtn.innerText = "Booking...";
         submitBtn.disabled = true;
 
+        const token = localStorage.getItem('token'); // 👈 Get Token
+
         const response = await fetch(`${API_BASE}/events`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                // 👇 Send Token if available
+                ...(token && { 'Authorization': `Bearer ${token}` })
+            },
             body: JSON.stringify(bookingData)
         });
 
@@ -1072,8 +1078,10 @@ function openEventInvoice(eventId) {
 
     // 4. Totals (Events don't have delivery fee usually in this logic)
     document.getElementById('inv-subtotal').textContent = `₹${subtotal.toLocaleString()}`;
-    // Hide delivery fee row strictly for events logic if needed, but keeping simple:
-    // Hum Delivery Fee ko 0 dikhayenge ya ignore karenge agar calculation match karni hai
+    // Hide delivery fee row strictly for events logic
+    const deliveryRow = document.getElementById('inv-delivery-row');
+    if (deliveryRow) deliveryRow.classList.add('hidden');
+
     document.getElementById('inv-total').textContent = `₹${event.totalAmount.toLocaleString()}`;
 
     // 5. Show Modal
@@ -1493,3 +1501,13 @@ window.addEventListener('load', () => {
         lucide.createIcons();
     }
 });
+
+// ======================
+// INVOICE MODAL HELPERS
+// ======================
+function closeCustInvoice() {
+    document.getElementById('cust-invoice-modal').classList.add('hidden');
+    // Reset Delivery Fee Visibility (Show it again for Orders)
+    const deliveryRow = document.getElementById('inv-delivery-row');
+    if (deliveryRow) deliveryRow.classList.remove('hidden');
+}
